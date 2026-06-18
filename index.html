@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#ffffff">
     <title>BYD Indonesia — Electric Vehicles</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -50,8 +51,17 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        html { scroll-behavior: smooth; }
-        body { font-feature-settings: 'ss01', 'cv11'; -webkit-font-smoothing: antialiased; }
+        html { 
+            scroll-behavior: smooth; 
+            -webkit-text-size-adjust: 100%;
+        }
+        body { 
+            font-feature-settings: 'ss01', 'cv11'; 
+            -webkit-font-smoothing: antialiased;
+            /* Safe area padding for notched devices */
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
         
         /* Subtle scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -68,9 +78,11 @@
         /* Smooth image loading */
         img { transition: opacity 0.4s ease; }
         
-        /* Subtle hover lift */
-        .lift { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease; }
-        .lift:hover { transform: translateY(-2px); }
+        /* Subtle hover lift - desktop only */
+        @media (hover: hover) {
+            .lift { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease; }
+            .lift:hover { transform: translateY(-2px); }
+        }
         
         /* Marquee for brand strip */
         @keyframes marquee {
@@ -79,25 +91,58 @@
         }
         .marquee-track { animation: marquee 40s linear infinite; }
         
-        /* Fade in on scroll */
-        .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
-        .reveal.is-visible { opacity: 1; transform: translateY(0); }
-        
         /* Number ticker */
         .stat-number { font-variant-numeric: tabular-nums; }
+        
+        /* Touch targets - min 44px for iOS/Android */
+        .touch-target { min-height: 44px; min-width: 44px; }
+        
+        /* Prevent iOS zoom on input focus */
+        @media (max-width: 768px) {
+            input, select, textarea { font-size: 16px !important; }
+        }
+        
+        /* Smooth transitions for mobile drawer */
+        .mobile-drawer {
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+        /* Bottom sheet animation for mobile */
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        
+        /* Header safe area */
+        .safe-top { padding-top: env(safe-area-inset-top); }
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+        
+        /* Responsive typography clamp */
+        .fluid-h1 { font-size: clamp(2.25rem, 8vw, 4.5rem); }
+        .fluid-h2 { font-size: clamp(1.875rem, 6vw, 3rem); }
+        .fluid-h3 { font-size: clamp(1.5rem, 4vw, 2.25rem); }
+        
+        /* Hide scrollbar but allow scroll */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Active state for mobile */
+        @media (hover: none) {
+            .tap-active:active { transform: scale(0.97); transition: transform 0.1s; }
+        }
     </style>
 </head>
-<body class="bg-white text-ink-900 font-sans antialiased" x-data="carDealerApp()" x-init="init()">
+<body class="bg-white text-ink-900 font-sans antialiased overflow-x-hidden" x-data="carDealerApp()" x-init="init()">
 
-    <!-- Toast Notifications -->
-    <div class="fixed bottom-6 right-6 z-[100] flex flex-col gap-2 max-w-sm">
+    <!-- Toast Notifications - Responsive positioning -->
+    <div class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-[100] flex flex-col gap-2 max-w-sm safe-bottom pointer-events-none">
         <template x-for="toast in toasts" :key="toast.id">
-            <div class="bg-ink-950 text-white px-5 py-3.5 rounded-xl shadow-lg flex items-center justify-between gap-4 text-sm animate-[slideIn_0.3s_ease-out]"
+            <div class="bg-ink-950 text-white px-5 py-3.5 rounded-xl shadow-lg flex items-center justify-between gap-4 text-sm pointer-events-auto"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 translate-y-2"
                  x-transition:enter-end="opacity-100 translate-y-0">
                 <span class="font-medium" x-text="toast.message"></span>
-                <button @click="removeToast(toast.id)" class="text-ink-400 hover:text-white transition">
+                <button @click="removeToast(toast.id)" class="text-ink-400 hover:text-white transition touch-target flex items-center justify-center -mr-2">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -105,13 +150,13 @@
     </div>
 
     <!-- Header -->
-    <header class="fixed top-0 inset-x-0 z-50 transition-all duration-300" 
+    <header class="fixed top-0 inset-x-0 z-50 transition-all duration-300 safe-top" 
             :class="scrolled ? 'bg-white/80 backdrop-blur-xl border-b border-ink-100' : 'bg-transparent'">
-        <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
-            <div class="flex items-center justify-between h-16 lg:h-20">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+            <div class="flex items-center justify-between h-14 sm:h-16 lg:h-20">
                 <!-- Logo -->
-                <a href="#" class="flex items-center gap-2.5 shrink-0">
-                    <span class="font-display font-bold text-xl tracking-tightest">BYD</span>
+                <a href="#" class="flex items-center gap-2 shrink-0 touch-target">
+                    <span class="font-display font-bold text-lg sm:text-xl tracking-tightest">BYD</span>
                     <span class="hidden sm:inline text-ink-400 text-sm font-normal">Indonesia</span>
                 </a>
 
@@ -124,97 +169,103 @@
                 </nav>
 
                 <!-- Actions -->
-                <div class="flex items-center gap-2">
-                    <button @click="isWishlistOpen = true" class="relative p-2.5 text-ink-700 hover:text-ink-950 transition rounded-full hover:bg-ink-50">
+                <div class="flex items-center gap-1 sm:gap-2">
+                    <button @click="isWishlistOpen = true" class="relative p-2 sm:p-2.5 text-ink-700 hover:text-ink-950 transition rounded-full hover:bg-ink-50 touch-target flex items-center justify-center">
                         <i data-lucide="heart" class="w-5 h-5"></i>
                         <span x-show="favorites.length > 0" 
                               x-text="favorites.length"
-                              class="absolute -top-0.5 -right-0.5 bg-accent text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"></span>
+                              class="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 bg-accent text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"></span>
                     </button>
-                    <a href="#hubungi" class="hidden md:inline-flex items-center gap-2 bg-ink-950 hover:bg-ink-800 text-white text-sm font-medium px-5 py-2.5 rounded-full transition">
+                    <a href="#hubungi" class="hidden md:inline-flex items-center gap-2 bg-ink-950 hover:bg-ink-800 text-white text-sm font-medium px-5 py-2.5 rounded-full transition touch-target tap-active">
                         Test Drive
                     </a>
-                    <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="lg:hidden p-2.5 text-ink-700 hover:text-ink-950 transition">
+                    <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="lg:hidden p-2 text-ink-700 hover:text-ink-950 transition touch-target flex items-center justify-center">
                         <i :data-lucide="isMobileMenuOpen ? 'x' : 'menu'" class="w-5 h-5"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Mobile Menu -->
+            <!-- Mobile Menu - Full screen overlay -->
             <div x-cloak x-show="isMobileMenuOpen" 
                  x-transition:enter="transition ease-out duration-200"
-                 x-transition:enter-start="opacity-0 -translate-y-2"
-                 x-transition:enter-end="opacity-100 translate-y-0"
-                 class="lg:hidden pb-6 pt-2 border-t border-ink-100">
-                <nav class="flex flex-col gap-1 text-base">
-                    <a href="#katalog" @click="isMobileMenuOpen = false" class="py-3 px-2 hover:bg-ink-50 rounded-lg transition">Model</a>
-                    <a href="#teknologi" @click="isMobileMenuOpen = false" class="py-3 px-2 hover:bg-ink-50 rounded-lg transition">Teknologi</a>
-                    <a href="#testimoni" @click="isMobileMenuOpen = false" class="py-3 px-2 hover:bg-ink-50 rounded-lg transition">Kepemilikan</a>
-                    <a href="#hubungi" @click="isMobileMenuOpen = false" class="py-3 px-2 hover:bg-ink-50 rounded-lg transition">Kontak</a>
-                    <a href="#hubungi" @click="isMobileMenuOpen = false" class="mt-2 bg-ink-950 text-white text-center py-3.5 rounded-full font-medium">Jadwalkan Test Drive</a>
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="lg:hidden fixed inset-0 top-14 bg-white z-40 overflow-y-auto safe-bottom">
+                <nav class="flex flex-col px-4 py-4">
+                    <a href="#katalog" @click="isMobileMenuOpen = false" class="py-4 px-2 hover:bg-ink-50 rounded-lg transition border-b border-ink-100 text-base">Model</a>
+                    <a href="#teknologi" @click="isMobileMenuOpen = false" class="py-4 px-2 hover:bg-ink-50 rounded-lg transition border-b border-ink-100 text-base">Teknologi</a>
+                    <a href="#testimoni" @click="isMobileMenuOpen = false" class="py-4 px-2 hover:bg-ink-50 rounded-lg transition border-b border-ink-100 text-base">Kepemilikan</a>
+                    <a href="#hubungi" @click="isMobileMenuOpen = false" class="py-4 px-2 hover:bg-ink-50 rounded-lg transition border-b border-ink-100 text-base">Kontak</a>
+                    <a href="#hubungi" @click="isMobileMenuOpen = false" class="mt-6 bg-ink-950 text-white text-center py-4 rounded-full font-medium touch-target tap-active">
+                        Jadwalkan Test Drive
+                    </a>
                 </nav>
             </div>
         </div>
     </header>
 
     <!-- Hero -->
-    <section class="relative min-h-screen flex items-center pt-20 pb-16 overflow-hidden bg-gradient-to-b from-ink-50/50 via-white to-white">
-        <div class="max-w-[1400px] mx-auto px-6 lg:px-10 w-full grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-            <div class="lg:col-span-5 space-y-8">
+    <section class="relative min-h-[100svh] flex items-center pt-20 pb-12 sm:pb-16 lg:pb-24 overflow-hidden bg-gradient-to-b from-ink-50/50 via-white to-white">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 w-full grid lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-16 items-center">
+            <div class="lg:col-span-5 space-y-6 sm:space-y-8 order-2 lg:order-1">
                 <div class="inline-flex items-center gap-2 text-xs font-medium text-ink-500 uppercase tracking-wider">
                     <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
                     Model 2026 Tersedia
                 </div>
-                <h1 class="font-display font-bold text-5xl sm:text-6xl lg:text-7xl leading-[0.95] tracking-tightest text-ink-950">
+                <h1 class="font-display font-bold fluid-h1 leading-[0.95] tracking-tightest text-ink-950">
                     Electric,<br>
                     <span class="text-ink-400">Refined.</span>
                 </h1>
-                <p class="text-lg text-ink-600 leading-relaxed max-w-md">
+                <p class="text-base sm:text-lg text-ink-600 leading-relaxed max-w-md">
                     Kendaraan listrik premium dengan teknologi Blade Battery terdepan. Dirancang untuk performa, dibangun untuk masa depan.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                    <a href="#katalog" class="inline-flex items-center justify-center gap-2 bg-ink-950 hover:bg-ink-800 text-white font-medium px-7 py-4 rounded-full transition group">
+                    <a href="#katalog" class="inline-flex items-center justify-center gap-2 bg-ink-950 hover:bg-ink-800 text-white font-medium px-7 py-4 rounded-full transition group touch-target tap-active">
                         Jelajahi Model
                         <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-0.5 transition"></i>
                     </a>
-                    <a href="#hubungi" class="inline-flex items-center justify-center gap-2 bg-white hover:bg-ink-50 text-ink-950 font-medium px-7 py-4 rounded-full border border-ink-200 transition">
+                    <a href="#hubungi" class="inline-flex items-center justify-center gap-2 bg-white hover:bg-ink-50 text-ink-950 font-medium px-7 py-4 rounded-full border border-ink-200 transition touch-target tap-active">
                         Hubungi Kami
                     </a>
                 </div>
                 
                 <!-- Stats -->
-                <div class="grid grid-cols-3 gap-6 pt-8 border-t border-ink-100">
+                <div class="grid grid-cols-3 gap-4 sm:gap-6 pt-6 sm:pt-8 border-t border-ink-100">
                     <div>
-                        <div class="font-display font-bold text-2xl text-ink-950 stat-number">650<span class="text-ink-400 text-base">km</span></div>
-                        <div class="text-xs text-ink-500 mt-1">Jarak Tempuh</div>
+                        <div class="font-display font-bold text-xl sm:text-2xl text-ink-950 stat-number">650<span class="text-ink-400 text-xs sm:text-base">km</span></div>
+                        <div class="text-[11px] sm:text-xs text-ink-500 mt-1">Jarak Tempuh</div>
                     </div>
                     <div>
-                        <div class="font-display font-bold text-2xl text-ink-950 stat-number">3.8<span class="text-ink-400 text-base">s</span></div>
-                        <div class="text-xs text-ink-500 mt-1">0-100 km/j</div>
+                        <div class="font-display font-bold text-xl sm:text-2xl text-ink-950 stat-number">3.8<span class="text-ink-400 text-xs sm:text-base">s</span></div>
+                        <div class="text-[11px] sm:text-xs text-ink-500 mt-1">0-100 km/j</div>
                     </div>
                     <div>
-                        <div class="font-display font-bold text-2xl text-ink-950 stat-number">8<span class="text-ink-400 text-base">th</span></div>
-                        <div class="text-xs text-ink-500 mt-1">Garansi Baterai</div>
+                        <div class="font-display font-bold text-xl sm:text-2xl text-ink-950 stat-number">8<span class="text-ink-400 text-xs sm:text-base">th</span></div>
+                        <div class="text-[11px] sm:text-xs text-ink-500 mt-1">Garansi Baterai</div>
                     </div>
                 </div>
             </div>
 
             <!-- Hero Image -->
-            <div class="lg:col-span-7 relative">
-                <div class="relative aspect-[4/3] lg:aspect-[16/10] rounded-3xl overflow-hidden bg-ink-100">
+            <div class="lg:col-span-7 relative order-1 lg:order-2">
+                <div class="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[16/10] rounded-2xl sm:rounded-3xl overflow-hidden bg-ink-100">
                     <img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=1600" 
                          alt="BYD EV" 
                          class="w-full h-full object-cover"
+                         loading="eager"
                          onerror="this.src='https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&q=80&w=1600'">
                     <div class="absolute inset-0 bg-gradient-to-t from-ink-950/30 via-transparent to-transparent"></div>
                     
                     <!-- Floating card -->
-                    <div class="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-xl rounded-2xl p-5 flex items-center justify-between gap-4 shadow-lg">
-                        <div>
-                            <div class="text-xs text-ink-500 font-medium">Mulai dari</div>
-                            <div class="font-display font-bold text-xl text-ink-950">Rp 369 Juta</div>
+                    <div class="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 bg-white/95 backdrop-blur-xl rounded-xl sm:rounded-2xl p-4 sm:p-5 flex items-center justify-between gap-3 sm:gap-4 shadow-lg">
+                        <div class="min-w-0">
+                            <div class="text-[11px] sm:text-xs text-ink-500 font-medium">Mulai dari</div>
+                            <div class="font-display font-bold text-base sm:text-xl text-ink-950 truncate">Rp 369 Juta</div>
                         </div>
-                        <a href="#katalog" class="bg-ink-950 hover:bg-ink-800 text-white text-sm font-medium px-5 py-2.5 rounded-full transition">
+                        <a href="#katalog" class="bg-ink-950 hover:bg-ink-800 text-white text-xs sm:text-sm font-medium px-4 sm:px-5 py-2 sm:py-2.5 rounded-full transition shrink-0 touch-target flex items-center tap-active">
                             Lihat Semua
                         </a>
                     </div>
@@ -224,23 +275,23 @@
     </section>
 
     <!-- Brand Marquee Strip -->
-    <section class="py-10 border-y border-ink-100 bg-white overflow-hidden">
-        <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
-            <div class="flex items-center gap-12 text-ink-400 text-sm font-medium">
-                <span class="shrink-0 uppercase tracking-wider text-xs">Didukung oleh</span>
+    <section class="py-6 sm:py-10 border-y border-ink-100 bg-white overflow-hidden">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+            <div class="flex items-center gap-6 sm:gap-12 text-ink-400 text-sm font-medium">
+                <span class="shrink-0 uppercase tracking-wider text-[10px] sm:text-xs">Didukung oleh</span>
                 <div class="flex-1 overflow-hidden relative">
-                    <div class="flex gap-16 marquee-track whitespace-nowrap">
+                    <div class="flex gap-8 sm:gap-16 marquee-track whitespace-nowrap">
                         <template x-for="i in 2">
-                            <div class="flex gap-16 items-center">
-                                <span class="font-display font-semibold text-lg">Blade Battery™</span>
+                            <div class="flex gap-8 sm:gap-16 items-center">
+                                <span class="font-display font-semibold text-sm sm:text-lg">Blade Battery™</span>
                                 <span class="text-ink-300">•</span>
-                                <span class="font-display font-semibold text-lg">e-Platform 3.0</span>
+                                <span class="font-display font-semibold text-sm sm:text-lg">e-Platform 3.0</span>
                                 <span class="text-ink-300">•</span>
-                                <span class="font-display font-semibold text-lg">DM-i Super Hybrid</span>
+                                <span class="font-display font-semibold text-sm sm:text-lg">DM-i Super Hybrid</span>
                                 <span class="text-ink-300">•</span>
-                                <span class="font-display font-semibold text-lg">DiPilot ADAS</span>
+                                <span class="font-display font-semibold text-sm sm:text-lg">DiPilot ADAS</span>
                                 <span class="text-ink-300">•</span>
-                                <span class="font-display font-semibold text-lg">Vehicle-to-Load</span>
+                                <span class="font-display font-semibold text-sm sm:text-lg">Vehicle-to-Load</span>
                                 <span class="text-ink-300">•</span>
                             </div>
                         </template>
@@ -251,52 +302,53 @@
     </section>
 
     <!-- Featured Model (BYD M6) -->
-    <section class="py-24 lg:py-32 bg-white">
-        <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
-            <div class="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+    <section class="py-16 sm:py-24 lg:py-32 bg-white">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+            <div class="grid lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-20 items-center">
                 <div class="lg:col-span-7 order-2 lg:order-1">
-                    <div class="relative aspect-[4/3] rounded-3xl overflow-hidden bg-ink-100">
+                    <div class="relative aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden bg-ink-100">
                         <img src="https://imgcdn.oto.com/large/gallery/exterior/177/3039/byd-m6-front-angle-low-view-779791.jpg?tr=w-1200,h=900" 
                              alt="BYD M6" 
                              class="w-full h-full object-cover"
+                             loading="lazy"
                              onerror="this.src='https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&q=80&w=1200'">
                     </div>
                 </div>
-                <div class="lg:col-span-5 order-1 lg:order-2 space-y-6">
+                <div class="lg:col-span-5 order-1 lg:order-2 space-y-5 sm:space-y-6">
                     <span class="text-xs font-medium text-accent uppercase tracking-wider">Model Unggulan</span>
-                    <h2 class="font-display font-bold text-4xl sm:text-5xl leading-tight tracking-tightest text-ink-950">
+                    <h2 class="font-display font-bold fluid-h2 leading-tight tracking-tightest text-ink-950">
                         BYD M6
                     </h2>
-                    <p class="text-lg text-ink-600 leading-relaxed">
+                    <p class="text-base sm:text-lg text-ink-600 leading-relaxed">
                         MPV listrik 7-seater pertama dari BYD. Dirancang untuk keluarga modern yang menginginkan kenyamanan premium tanpa kompromi pada keberlanjutan.
                     </p>
                     
-                    <div class="grid grid-cols-2 gap-6 py-6 border-y border-ink-100">
+                    <div class="grid grid-cols-2 gap-4 sm:gap-6 py-5 sm:py-6 border-y border-ink-100">
                         <div>
-                            <div class="text-xs text-ink-500 mb-1">Jarak Tempuh</div>
-                            <div class="font-display font-semibold text-xl text-ink-950">530 km</div>
+                            <div class="text-[11px] sm:text-xs text-ink-500 mb-1">Jarak Tempuh</div>
+                            <div class="font-display font-semibold text-lg sm:text-xl text-ink-950">530 km</div>
                         </div>
                         <div>
-                            <div class="text-xs text-ink-500 mb-1">Kapasitas Baterai</div>
-                            <div class="font-display font-semibold text-xl text-ink-950">71.8 kWh</div>
+                            <div class="text-[11px] sm:text-xs text-ink-500 mb-1">Kapasitas Baterai</div>
+                            <div class="font-display font-semibold text-lg sm:text-xl text-ink-950">71.8 kWh</div>
                         </div>
                         <div>
-                            <div class="text-xs text-ink-500 mb-1">Fast Charging</div>
-                            <div class="font-display font-semibold text-xl text-ink-950">30 menit</div>
+                            <div class="text-[11px] sm:text-xs text-ink-500 mb-1">Fast Charging</div>
+                            <div class="font-display font-semibold text-lg sm:text-xl text-ink-950">30 menit</div>
                         </div>
                         <div>
-                            <div class="text-xs text-ink-500 mb-1">Kursi</div>
-                            <div class="font-display font-semibold text-xl text-ink-950">7 Seater</div>
+                            <div class="text-[11px] sm:text-xs text-ink-500 mb-1">Kursi</div>
+                            <div class="font-display font-semibold text-lg sm:text-xl text-ink-950">7 Seater</div>
                         </div>
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-3 pt-2">
                         <a href="#hubungi" @click="consultCarOfInterest = 'BYD M6 EV'; addToast('BYD M6 dipilih')" 
-                           class="inline-flex items-center justify-center gap-2 bg-ink-950 hover:bg-ink-800 text-white font-medium px-6 py-3.5 rounded-full transition">
+                           class="inline-flex items-center justify-center gap-2 bg-ink-950 hover:bg-ink-800 text-white font-medium px-6 py-3.5 rounded-full transition touch-target tap-active">
                             Dapatkan Penawaran
                         </a>
                         <button @click="openCarDetail(cars.find(c => c.name === 'BYD M6 EV'))" 
-                                class="inline-flex items-center justify-center gap-2 text-ink-700 hover:text-ink-950 font-medium px-6 py-3.5 transition">
+                                class="inline-flex items-center justify-center gap-2 text-ink-700 hover:text-ink-950 font-medium px-6 py-3.5 transition touch-target tap-active">
                             Spesifikasi Lengkap
                             <i data-lucide="arrow-right" class="w-4 h-4"></i>
                         </button>
@@ -307,70 +359,71 @@
     </section>
 
     <!-- Katalog -->
-    <section id="katalog" class="py-24 lg:py-32 bg-ink-50/50">
-        <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+    <section id="katalog" class="py-16 sm:py-24 lg:py-32 bg-ink-50/50">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-5 sm:gap-6 mb-8 sm:mb-12">
                 <div class="max-w-xl">
-                    <h2 class="font-display font-bold text-4xl sm:text-5xl leading-tight tracking-tightest text-ink-950">
+                    <h2 class="font-display font-bold fluid-h2 leading-tight tracking-tightest text-ink-950">
                         Semua Model.
                     </h2>
-                    <p class="text-ink-600 mt-4 text-lg">
+                    <p class="text-ink-600 mt-3 sm:mt-4 text-base sm:text-lg">
                         Temukan kendaraan listrik yang sesuai dengan gaya hidup Anda.
                     </p>
                 </div>
                 
-                <!-- Filter Pills -->
-                <div class="flex flex-wrap gap-2">
+                <!-- Filter Pills - Horizontal scroll on mobile -->
+                <div class="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap">
                     <button @click="searchBodyType = 'all'; searchCars()" 
                             :class="searchBodyType === 'all' ? 'bg-ink-950 text-white' : 'bg-white text-ink-700 border border-ink-200 hover:border-ink-300'"
-                            class="px-5 py-2.5 rounded-full text-sm font-medium transition">
+                            class="px-4 sm:px-5 py-2.5 rounded-full text-sm font-medium transition shrink-0 touch-target tap-active">
                         Semua
                     </button>
                     <button @click="searchBodyType = 'SUV'; searchCars()" 
                             :class="searchBodyType === 'SUV' ? 'bg-ink-950 text-white' : 'bg-white text-ink-700 border border-ink-200 hover:border-ink-300'"
-                            class="px-5 py-2.5 rounded-full text-sm font-medium transition">
+                            class="px-4 sm:px-5 py-2.5 rounded-full text-sm font-medium transition shrink-0 touch-target tap-active">
                         SUV
                     </button>
                     <button @click="searchBodyType = 'Sedan'; searchCars()" 
                             :class="searchBodyType === 'Sedan' ? 'bg-ink-950 text-white' : 'bg-white text-ink-700 border border-ink-200 hover:border-ink-300'"
-                            class="px-5 py-2.5 rounded-full text-sm font-medium transition">
+                            class="px-4 sm:px-5 py-2.5 rounded-full text-sm font-medium transition shrink-0 touch-target tap-active">
                         Sedan
                     </button>
                     <button @click="searchBodyType = 'MPV'; searchCars()" 
                             :class="searchBodyType === 'MPV' ? 'bg-ink-950 text-white' : 'bg-white text-ink-700 border border-ink-200 hover:border-ink-300'"
-                            class="px-5 py-2.5 rounded-full text-sm font-medium transition">
+                            class="px-4 sm:px-5 py-2.5 rounded-full text-sm font-medium transition shrink-0 touch-target tap-active">
                         MPV
                     </button>
                     <button @click="searchBodyType = 'Hatchback'; searchCars()" 
                             :class="searchBodyType === 'Hatchback' ? 'bg-ink-950 text-white' : 'bg-white text-ink-700 border border-ink-200 hover:border-ink-300'"
-                            class="px-5 py-2.5 rounded-full text-sm font-medium transition">
+                            class="px-4 sm:px-5 py-2.5 rounded-full text-sm font-medium transition shrink-0 touch-target tap-active">
                         Hatchback
                     </button>
                 </div>
             </div>
 
-            <!-- Car Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Car Grid - 1 col mobile, 2 col tablet, 3 col desktop -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <template x-for="car in filteredCars" :key="car.id">
-                    <div class="group bg-white rounded-2xl overflow-hidden border border-ink-100 hover:border-ink-200 lift cursor-pointer"
+                    <div class="group bg-white rounded-2xl overflow-hidden border border-ink-100 hover:border-ink-200 cursor-pointer tap-active"
                          @click="openCarDetail(car)">
                         <div class="relative aspect-[4/3] bg-ink-100 overflow-hidden">
                             <img :src="car.image" :alt="car.name" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                                 class="w-full h-full object-cover transition duration-700"
+                                 loading="lazy"
                                  onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=800'">
                             
                             <button @click.stop="toggleFavorite(car.id)" 
-                                    class="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition"
+                                    class="absolute top-3 right-3 w-10 h-10 sm:w-10 sm:h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition touch-target"
                                     :class="isFavorite(car.id) ? 'text-accent' : 'text-ink-700'">
                                 <i data-lucide="heart" :class="isFavorite(car.id) ? 'fill-current' : ''" class="w-4 h-4"></i>
                             </button>
                         </div>
                         
-                        <div class="p-6">
-                            <div class="flex items-start justify-between gap-4 mb-3">
-                                <div>
-                                    <h3 class="font-display font-semibold text-xl text-ink-950 group-hover:text-accent transition" x-text="car.name"></h3>
-                                    <p class="text-sm text-ink-500 mt-0.5" x-text="car.bodyType + ' · ' + car.year"></p>
+                        <div class="p-4 sm:p-6">
+                            <div class="flex items-start justify-between gap-3 sm:gap-4 mb-3">
+                                <div class="min-w-0 flex-1">
+                                    <h3 class="font-display font-semibold text-lg sm:text-xl text-ink-950 truncate" x-text="car.name"></h3>
+                                    <p class="text-xs sm:text-sm text-ink-500 mt-0.5" x-text="car.bodyType + ' · ' + car.year"></p>
                                 </div>
                                 <div class="flex items-center gap-1 text-ink-700 shrink-0">
                                     <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
@@ -378,29 +431,30 @@
                                 </div>
                             </div>
                             
-                            <div class="flex items-center gap-4 text-xs text-ink-500 py-4 border-y border-ink-100">
-                                <div class="flex items-center gap-1.5">
+                            <!-- Specs - Stack on small mobile -->
+                            <div class="flex items-center gap-3 sm:gap-4 text-xs text-ink-500 py-3 sm:py-4 border-y border-ink-100 overflow-x-auto scrollbar-hide">
+                                <div class="flex items-center gap-1.5 shrink-0">
                                     <i data-lucide="gauge" class="w-3.5 h-3.5"></i>
                                     <span x-text="car.mileage"></span>
                                 </div>
-                                <div class="flex items-center gap-1.5">
+                                <div class="flex items-center gap-1.5 shrink-0">
                                     <i data-lucide="battery" class="w-3.5 h-3.5"></i>
                                     <span x-text="car.batteryCapacity"></span>
                                 </div>
-                                <div class="flex items-center gap-1.5">
+                                <div class="flex items-center gap-1.5 shrink-0">
                                     <i data-lucide="users" class="w-3.5 h-3.5"></i>
-                                    <span x-text="car.seats + ' seats'"></span>
+                                    <span x-text="car.seats"></span>
                                 </div>
                             </div>
                             
                             <div class="flex items-center justify-between mt-4">
-                                <div>
-                                    <div class="text-xs text-ink-500">Mulai dari</div>
-                                    <div class="font-display font-semibold text-lg text-ink-950" x-text="formatRupiah(car.price)"></div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-[11px] sm:text-xs text-ink-500">Mulai dari</div>
+                                    <div class="font-display font-semibold text-base sm:text-lg text-ink-950 truncate" x-text="formatRupiah(car.price)"></div>
                                 </div>
-                                <span class="text-sm font-medium text-accent flex items-center gap-1 group-hover:gap-2 transition-all">
+                                <span class="text-xs sm:text-sm font-medium text-accent flex items-center gap-1 shrink-0 ml-2">
                                     Detail
-                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                    <i data-lucide="arrow-right" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
                                 </span>
                             </div>
                         </div>
@@ -409,13 +463,13 @@
             </div>
 
             <!-- Empty state -->
-            <div x-show="filteredCars.length === 0" class="text-center py-20">
+            <div x-show="filteredCars.length === 0" class="text-center py-16 sm:py-20">
                 <div class="inline-flex w-14 h-14 bg-ink-100 rounded-full items-center justify-center mb-4">
                     <i data-lucide="search-x" class="w-6 h-6 text-ink-400"></i>
                 </div>
-                <h3 class="font-display font-semibold text-xl text-ink-950">Tidak ada model ditemukan</h3>
-                <p class="text-ink-500 mt-2">Coba ubah filter untuk melihat lebih banyak model.</p>
-                <button @click="searchBodyType = 'all'; searchCars()" class="mt-6 text-accent font-medium hover:underline">
+                <h3 class="font-display font-semibold text-lg sm:text-xl text-ink-950">Tidak ada model ditemukan</h3>
+                <p class="text-ink-500 mt-2 text-sm sm:text-base">Coba ubah filter untuk melihat lebih banyak model.</p>
+                <button @click="searchBodyType = 'all'; searchCars()" class="mt-6 text-accent font-medium hover:underline touch-target tap-active">
                     Reset filter
                 </button>
             </div>
@@ -423,42 +477,43 @@
     </section>
 
     <!-- Teknologi -->
-    <section id="teknologi" class="py-24 lg:py-32 bg-ink-950 text-white relative overflow-hidden">
+    <section id="teknologi" class="py-16 sm:py-24 lg:py-32 bg-ink-950 text-white relative overflow-hidden">
         <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 40px 40px;"></div>
         
-        <div class="max-w-[1400px] mx-auto px-6 lg:px-10 relative">
-            <div class="max-w-2xl mb-16">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 relative">
+            <div class="max-w-2xl mb-10 sm:mb-16">
                 <span class="text-xs font-medium text-accent uppercase tracking-wider">Teknologi</span>
-                <h2 class="font-display font-bold text-4xl sm:text-5xl lg:text-6xl leading-tight tracking-tightest mt-4">
+                <h2 class="font-display font-bold fluid-h2 leading-tight tracking-tightest mt-4">
                     Inovasi yang<br>
                     <span class="text-ink-500">menggerakkan kami.</span>
                 </h2>
             </div>
 
+            <!-- Grid - Stack on mobile, 3 cols on desktop -->
             <div class="grid md:grid-cols-3 gap-px bg-ink-800 rounded-2xl overflow-hidden">
-                <div class="bg-ink-950 p-8 lg:p-10 hover:bg-ink-900 transition group">
-                    <div class="w-12 h-12 rounded-xl bg-ink-800 flex items-center justify-center mb-6 group-hover:bg-accent transition">
+                <div class="bg-ink-950 p-6 sm:p-8 lg:p-10 transition group">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-ink-800 flex items-center justify-center mb-5 sm:mb-6 group-hover:bg-accent transition">
                         <i data-lucide="shield" class="w-5 h-5"></i>
                     </div>
-                    <h3 class="font-display font-semibold text-xl mb-3">Blade Battery</h3>
+                    <h3 class="font-display font-semibold text-lg sm:text-xl mb-2 sm:mb-3">Blade Battery</h3>
                     <p class="text-ink-400 text-sm leading-relaxed">
                         Teknologi baterai LFP terdepan. Lolos uji penetrasi paku tanpa api atau asap — standar keamanan tertinggi di kelasnya.
                     </p>
                 </div>
-                <div class="bg-ink-950 p-8 lg:p-10 hover:bg-ink-900 transition group">
-                    <div class="w-12 h-12 rounded-xl bg-ink-800 flex items-center justify-center mb-6 group-hover:bg-accent transition">
+                <div class="bg-ink-950 p-6 sm:p-8 lg:p-10 transition group">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-ink-800 flex items-center justify-center mb-5 sm:mb-6 group-hover:bg-accent transition">
                         <i data-lucide="cpu" class="w-5 h-5"></i>
                     </div>
-                    <h3 class="font-display font-semibold text-xl mb-3">e-Platform 3.0</h3>
+                    <h3 class="font-display font-semibold text-lg sm:text-xl mb-2 sm:mb-3">e-Platform 3.0</h3>
                     <p class="text-ink-400 text-sm leading-relaxed">
                         Arsitektur kendaraan listrik terintegrasi 8-in-1. Efisiensi daya hingga 89% dengan jarak tempuh yang lebih jauh.
                     </p>
                 </div>
-                <div class="bg-ink-950 p-8 lg:p-10 hover:bg-ink-900 transition group">
-                    <div class="w-12 h-12 rounded-xl bg-ink-800 flex items-center justify-center mb-6 group-hover:bg-accent transition">
+                <div class="bg-ink-950 p-6 sm:p-8 lg:p-10 transition group">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-ink-800 flex items-center justify-center mb-5 sm:mb-6 group-hover:bg-accent transition">
                         <i data-lucide="zap" class="w-5 h-5"></i>
                     </div>
-                    <h3 class="font-display font-semibold text-xl mb-3">Vehicle-to-Load</h3>
+                    <h3 class="font-display font-semibold text-lg sm:text-xl mb-2 sm:mb-3">Vehicle-to-Load</h3>
                     <p class="text-ink-400 text-sm leading-relaxed">
                         Kendaraan Anda menjadi power bank berjalan. Alirkan daya ke perangkat rumah tangga, perkakas, atau aktivitas outdoor.
                     </p>
@@ -468,68 +523,69 @@
     </section>
 
     <!-- Testimoni -->
-    <section id="testimoni" class="py-24 lg:py-32 bg-white">
-        <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
-            <div class="max-w-2xl mb-16">
+    <section id="testimoni" class="py-16 sm:py-24 lg:py-32 bg-white">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+            <div class="max-w-2xl mb-10 sm:mb-16">
                 <span class="text-xs font-medium text-accent uppercase tracking-wider">Kepemilikan</span>
-                <h2 class="font-display font-bold text-4xl sm:text-5xl leading-tight tracking-tightest text-ink-950 mt-4">
+                <h2 class="font-display font-bold fluid-h2 leading-tight tracking-tightest text-ink-950 mt-4">
                     Dipercaya oleh<br>pemilik awal.
                 </h2>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-ink-50/70 rounded-2xl p-8 border border-ink-100">
-                    <div class="flex gap-0.5 mb-5">
+            <!-- Stack on mobile, 3 cols on desktop -->
+            <div class="grid md:grid-cols-3 gap-4 sm:gap-6">
+                <div class="bg-ink-50/70 rounded-2xl p-6 sm:p-8 border border-ink-100">
+                    <div class="flex gap-0.5 mb-4 sm:mb-5">
                         <template x-for="i in 5">
                             <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
                         </template>
                     </div>
-                    <p class="text-ink-700 leading-relaxed mb-8">
+                    <p class="text-ink-700 leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
                         "Kabin BYD M6 sangat luas untuk keluarga kami. Akselerasinya halus dan senyap, biaya pengisian jauh lebih hemat dibanding BBM."
                     </p>
-                    <div class="flex items-center gap-3 pt-6 border-t border-ink-200">
+                    <div class="flex items-center gap-3 pt-5 sm:pt-6 border-t border-ink-200">
                         <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" 
                              alt="Andika" class="w-10 h-10 rounded-full object-cover">
-                        <div>
-                            <div class="font-medium text-sm text-ink-950">Andika Wijaya</div>
+                        <div class="min-w-0">
+                            <div class="font-medium text-sm text-ink-950 truncate">Andika Wijaya</div>
                             <div class="text-xs text-ink-500">Pengusaha · BYD M6</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-ink-50/70 rounded-2xl p-8 border border-ink-100">
-                    <div class="flex gap-0.5 mb-5">
+                <div class="bg-ink-50/70 rounded-2xl p-6 sm:p-8 border border-ink-100">
+                    <div class="flex gap-0.5 mb-4 sm:mb-5">
                         <template x-for="i in 5">
                             <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
                         </template>
                     </div>
-                    <p class="text-ink-700 leading-relaxed mb-8">
+                    <p class="text-ink-700 leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
                         "BYD Seal Performance benar-benar luar biasa. 0-100 dalam 3.8 detik, desainnya elegan, dan rasa aman dari Blade Battery tak tertandingi."
                     </p>
-                    <div class="flex items-center gap-3 pt-6 border-t border-ink-200">
+                    <div class="flex items-center gap-3 pt-5 sm:pt-6 border-t border-ink-200">
                         <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150" 
                              alt="Sarah" class="w-10 h-10 rounded-full object-cover">
-                        <div>
-                            <div class="font-medium text-sm text-ink-950">Sarah Callista</div>
+                        <div class="min-w-0">
+                            <div class="font-medium text-sm text-ink-950 truncate">Sarah Callista</div>
                             <div class="text-xs text-ink-500">Arsitek · BYD Seal</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-ink-50/70 rounded-2xl p-8 border border-ink-100">
-                    <div class="flex gap-0.5 mb-5">
+                <div class="bg-ink-50/70 rounded-2xl p-6 sm:p-8 border border-ink-100">
+                    <div class="flex gap-0.5 mb-4 sm:mb-5">
                         <template x-for="i in 5">
                             <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
                         </template>
                     </div>
-                    <p class="text-ink-700 leading-relaxed mb-8">
+                    <p class="text-ink-700 leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
                         "Pelayanan purnajualnya sangat profesional. Dari proses leasing, instalasi home charger, hingga asuransi — semua dibantu dengan baik."
                     </p>
-                    <div class="flex items-center gap-3 pt-6 border-t border-ink-200">
+                    <div class="flex items-center gap-3 pt-5 sm:pt-6 border-t border-ink-200">
                         <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150" 
                              alt="Roni" class="w-10 h-10 rounded-full object-cover">
-                        <div>
-                            <div class="font-medium text-sm text-ink-950">Roni Suhendra</div>
+                        <div class="min-w-0">
+                            <div class="font-medium text-sm text-ink-950 truncate">Roni Suhendra</div>
                             <div class="text-xs text-ink-500">Kolektor EV · BYD Atto 3</div>
                         </div>
                     </div>
@@ -539,26 +595,26 @@
     </section>
 
     <!-- CTA / Contact -->
-    <section id="hubungi" class="py-24 lg:py-32 bg-ink-50/50">
-        <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
-            <div class="grid lg:grid-cols-12 gap-12 lg:gap-20">
-                <div class="lg:col-span-5 space-y-8">
+    <section id="hubungi" class="py-16 sm:py-24 lg:py-32 bg-ink-50/50">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+            <div class="grid lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-20">
+                <div class="lg:col-span-5 space-y-6 sm:space-y-8">
                     <div>
                         <span class="text-xs font-medium text-accent uppercase tracking-wider">Hubungi Kami</span>
-                        <h2 class="font-display font-bold text-4xl sm:text-5xl leading-tight tracking-tightest text-ink-950 mt-4">
+                        <h2 class="font-display font-bold fluid-h2 leading-tight tracking-tightest text-ink-950 mt-4">
                             Mulai perjalanan<br>listrik Anda.
                         </h2>
-                        <p class="text-ink-600 mt-5 text-lg leading-relaxed">
+                        <p class="text-ink-600 mt-4 sm:mt-5 text-base sm:text-lg leading-relaxed">
                             Tim kami siap membantu Anda menemukan model yang tepat, menjadwalkan test drive, atau memberikan simulasi kepemilikan.
                         </p>
                     </div>
 
-                    <div class="space-y-5 pt-4">
+                    <div class="space-y-4 sm:space-y-5 pt-2 sm:pt-4">
                         <div class="flex items-start gap-4">
                             <div class="w-10 h-10 rounded-full bg-white border border-ink-200 flex items-center justify-center shrink-0">
                                 <i data-lucide="map-pin" class="w-4 h-4 text-ink-700"></i>
                             </div>
-                            <div>
+                            <div class="min-w-0">
                                 <div class="text-xs text-ink-500 mb-1">Showroom</div>
                                 <div class="text-sm text-ink-950">Jl. H. Mena No. 98, Hajimena, Natar, Lampung Selatan</div>
                             </div>
@@ -585,42 +641,42 @@
                 </div>
 
                 <div class="lg:col-span-7">
-                    <form @submit.prevent="submitConsultationForm()" class="bg-white rounded-2xl p-8 lg:p-10 border border-ink-100">
-                        <h3 class="font-display font-semibold text-2xl text-ink-950 mb-6">Jadwalkan Konsultasi</h3>
+                    <form @submit.prevent="submitConsultationForm()" class="bg-white rounded-2xl p-5 sm:p-8 lg:p-10 border border-ink-100">
+                        <h3 class="font-display font-semibold text-xl sm:text-2xl text-ink-950 mb-5 sm:mb-6">Jadwalkan Konsultasi</h3>
                         
-                        <div class="grid sm:grid-cols-2 gap-5 mb-5">
+                        <div class="grid sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
                             <div>
                                 <label class="block text-xs font-medium text-ink-600 mb-2">Nama Lengkap</label>
                                 <input type="text" x-model="consultName" required 
                                        placeholder="Nama Anda" 
-                                       class="w-full px-4 py-3 bg-ink-50 border border-ink-100 rounded-xl text-sm focus:outline-none focus:border-ink-950 focus:bg-white transition">
+                                       class="w-full px-4 py-3 bg-ink-50 border border-ink-100 rounded-xl focus:outline-none focus:border-ink-950 focus:bg-white transition">
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-ink-600 mb-2">Nomor WhatsApp</label>
                                 <input type="tel" x-model="consultPhone" required 
                                        placeholder="08xxxxxxxxxx" 
-                                       class="w-full px-4 py-3 bg-ink-50 border border-ink-100 rounded-xl text-sm focus:outline-none focus:border-ink-950 focus:bg-white transition">
+                                       class="w-full px-4 py-3 bg-ink-50 border border-ink-100 rounded-xl focus:outline-none focus:border-ink-950 focus:bg-white transition">
                             </div>
                         </div>
 
-                        <div class="mb-5">
+                        <div class="mb-4 sm:mb-5">
                             <label class="block text-xs font-medium text-ink-600 mb-2">Model yang Diminati</label>
                             <select x-model="consultCarOfInterest" required 
-                                    class="w-full px-4 py-3 bg-ink-50 border border-ink-100 rounded-xl text-sm focus:outline-none focus:border-ink-950 focus:bg-white transition cursor-pointer">
+                                    class="w-full px-4 py-3 bg-ink-50 border border-ink-100 rounded-xl focus:outline-none focus:border-ink-950 focus:bg-white transition cursor-pointer">
                                 <template x-for="car in cars" :key="car.id">
                                     <option :value="car.name" x-text="car.name"></option>
                                 </template>
                             </select>
                         </div>
 
-                        <div class="mb-6">
+                        <div class="mb-5 sm:mb-6">
                             <label class="block text-xs font-medium text-ink-600 mb-2">Pesan <span class="text-ink-400">(Opsional)</span></label>
                             <textarea rows="4" x-model="consultMessage" 
                                       placeholder="Pertanyaan atau preferensi jadwal Anda..." 
-                                      class="w-full px-4 py-3 bg-ink-50 border border-ink-100 rounded-xl text-sm focus:outline-none focus:border-ink-950 focus:bg-white transition resize-none"></textarea>
+                                      class="w-full px-4 py-3 bg-ink-50 border border-ink-100 rounded-xl focus:outline-none focus:border-ink-950 focus:bg-white transition resize-none"></textarea>
                         </div>
 
-                        <button type="submit" class="w-full bg-ink-950 hover:bg-ink-800 text-white font-medium py-4 rounded-xl transition flex items-center justify-center gap-2">
+                        <button type="submit" class="w-full bg-ink-950 hover:bg-ink-800 text-white font-medium py-3.5 sm:py-4 rounded-xl transition flex items-center justify-center gap-2 touch-target tap-active">
                             Kirim Permintaan
                             <i data-lucide="arrow-right" class="w-4 h-4"></i>
                         </button>
@@ -632,17 +688,17 @@
 
     <!-- Footer -->
     <footer class="bg-white border-t border-ink-100">
-        <div class="max-w-[1400px] mx-auto px-6 lg:px-10 py-16">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-12 sm:py-16">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 mb-10 sm:mb-12">
                 <div class="col-span-2 md:col-span-1">
-                    <a href="#" class="font-display font-bold text-xl tracking-tightest text-ink-950">BYD</a>
+                    <a href="#" class="font-display font-bold text-lg sm:text-xl tracking-tightest text-ink-950">BYD</a>
                     <p class="text-sm text-ink-500 mt-4 leading-relaxed max-w-xs">
                         Kendaraan listrik premium dengan teknologi terdepan untuk mobilitas masa depan.
                     </p>
                 </div>
                 <div>
-                    <h4 class="font-medium text-sm text-ink-950 mb-4">Model</h4>
-                    <ul class="space-y-3 text-sm text-ink-500">
+                    <h4 class="font-medium text-sm text-ink-950 mb-3 sm:mb-4">Model</h4>
+                    <ul class="space-y-2.5 sm:space-y-3 text-sm text-ink-500">
                         <li><a href="#katalog" class="hover:text-ink-950 transition">BYD M6</a></li>
                         <li><a href="#katalog" class="hover:text-ink-950 transition">BYD Seal</a></li>
                         <li><a href="#katalog" class="hover:text-ink-950 transition">BYD Atto 3</a></li>
@@ -650,28 +706,28 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-medium text-sm text-ink-950 mb-4">Perusahaan</h4>
-                    <ul class="space-y-3 text-sm text-ink-500">
+                    <h4 class="font-medium text-sm text-ink-950 mb-3 sm:mb-4">Perusahaan</h4>
+                    <ul class="space-y-2.5 sm:space-y-3 text-sm text-ink-500">
                         <li><a href="#teknologi" class="hover:text-ink-950 transition">Teknologi</a></li>
                         <li><a href="#testimoni" class="hover:text-ink-950 transition">Testimoni</a></li>
                         <li><a href="#hubungi" class="hover:text-ink-950 transition">Kontak</a></li>
                         <li><a href="#" @click.prevent="addToast('Karir segera dibuka')" class="hover:text-ink-950 transition">Karir</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h4 class="font-medium text-sm text-ink-950 mb-4">Newsletter</h4>
-                    <p class="text-sm text-ink-500 mb-4">Dapatkan update model terbaru dan penawaran eksklusif.</p>
+                <div class="col-span-2 md:col-span-1">
+                    <h4 class="font-medium text-sm text-ink-950 mb-3 sm:mb-4">Newsletter</h4>
+                    <p class="text-sm text-ink-500 mb-3 sm:mb-4">Dapatkan update model terbaru dan penawaran eksklusif.</p>
                     <form @submit.prevent="addToast('Berhasil berlangganan newsletter')" class="flex gap-2">
                         <input type="email" required placeholder="Email Anda" 
-                               class="flex-1 px-4 py-2.5 bg-ink-50 border border-ink-100 rounded-full text-sm focus:outline-none focus:border-ink-950">
-                        <button type="submit" class="bg-ink-950 hover:bg-ink-800 text-white p-2.5 rounded-full transition shrink-0">
+                               class="flex-1 min-w-0 px-4 py-2.5 bg-ink-50 border border-ink-100 rounded-full focus:outline-none focus:border-ink-950">
+                        <button type="submit" class="bg-ink-950 hover:bg-ink-800 text-white p-2.5 rounded-full transition shrink-0 touch-target tap-active">
                             <i data-lucide="arrow-right" class="w-4 h-4"></i>
                         </button>
                     </form>
                 </div>
             </div>
             
-            <div class="pt-8 border-t border-ink-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ink-500">
+            <div class="pt-6 sm:pt-8 border-t border-ink-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ink-500">
                 <div>© 2026 BYD Indonesia. All rights reserved.</div>
                 <div class="flex gap-6">
                     <a href="#" class="hover:text-ink-950 transition">Privasi</a>
@@ -681,7 +737,7 @@
         </div>
     </footer>
 
-    <!-- Wishlist Drawer -->
+    <!-- Wishlist Drawer - Full screen on mobile, side drawer on desktop -->
     <div x-cloak x-show="isWishlistOpen" class="fixed inset-0 z-[90]" style="display: none;">
         <div x-show="isWishlistOpen" 
              x-transition:enter="transition ease-out duration-300" 
@@ -693,27 +749,27 @@
              class="absolute inset-0 bg-ink-950/40 backdrop-blur-sm" 
              @click="isWishlistOpen = false"></div>
         
-        <div class="absolute inset-y-0 right-0 max-w-full">
+        <div class="absolute inset-0 sm:inset-y-0 sm:right-0 sm:left-auto sm:max-w-md">
             <div x-show="isWishlistOpen" 
                  x-transition:enter="transform transition ease-out duration-300" 
-                 x-transition:enter-start="translate-x-full" 
-                 x-transition:enter-end="translate-x-0" 
+                 x-transition:enter-start="translate-y-full sm:translate-y-0 sm:translate-x-full" 
+                 x-transition:enter-end="translate-y-0 sm:translate-x-0" 
                  x-transition:leave="transform transition ease-in duration-200" 
-                 x-transition:leave-start="translate-x-0" 
-                 x-transition:leave-end="translate-x-full" 
-                 class="w-full max-w-md bg-white h-full flex flex-col shadow-2xl">
+                 x-transition:leave-start="translate-y-0 sm:translate-x-0" 
+                 x-transition:leave-end="translate-y-full sm:translate-y-0 sm:translate-x-full" 
+                 class="w-full h-full bg-white flex flex-col shadow-2xl safe-bottom">
                 
-                <div class="p-6 border-b border-ink-100 flex justify-between items-center">
+                <div class="p-4 sm:p-6 border-b border-ink-100 flex justify-between items-center safe-top shrink-0">
                     <div class="flex items-center gap-2">
                         <i data-lucide="heart" class="w-5 h-5 text-accent fill-accent"></i>
                         <h3 class="font-display font-semibold text-lg text-ink-950">Favorit Saya</h3>
                     </div>
-                    <button @click="isWishlistOpen = false" class="p-2 text-ink-500 hover:text-ink-950 transition rounded-full hover:bg-ink-50">
+                    <button @click="isWishlistOpen = false" class="p-2 text-ink-500 hover:text-ink-950 transition rounded-full hover:bg-ink-50 touch-target flex items-center justify-center">
                         <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                 </div>
 
-                <div class="flex-grow overflow-y-auto p-6 space-y-3">
+                <div class="flex-grow overflow-y-auto p-4 sm:p-6 space-y-3">
                     <template x-if="favorites.length === 0">
                         <div class="text-center py-16">
                             <div class="w-14 h-14 bg-ink-50 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -725,8 +781,8 @@
                     </template>
 
                     <template x-for="carId in favorites" :key="carId">
-                        <div class="flex gap-4 p-3 border border-ink-100 rounded-xl hover:border-ink-200 transition items-center">
-                            <div class="w-20 h-16 rounded-lg overflow-hidden bg-ink-100 shrink-0">
+                        <div class="flex gap-3 sm:gap-4 p-3 border border-ink-100 rounded-xl hover:border-ink-200 transition items-center">
+                            <div class="w-16 h-14 sm:w-20 sm:h-16 rounded-lg overflow-hidden bg-ink-100 shrink-0">
                                 <img :src="getCarById(carId)?.image" :alt="getCarById(carId)?.name" 
                                      class="w-full h-full object-cover"
                                      onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=200'">
@@ -735,17 +791,17 @@
                                 <h4 class="font-medium text-sm text-ink-950 truncate" x-text="getCarById(carId)?.name"></h4>
                                 <p class="text-xs text-ink-500 mt-0.5" x-text="formatRupiah(getCarById(carId)?.price || 0)"></p>
                             </div>
-                            <button @click="toggleFavorite(carId)" class="p-2 text-ink-400 hover:text-rose-500 transition shrink-0">
+                            <button @click="toggleFavorite(carId)" class="p-2 text-ink-400 hover:text-rose-500 transition shrink-0 touch-target flex items-center justify-center">
                                 <i data-lucide="x" class="w-4 h-4"></i>
                             </button>
                         </div>
                     </template>
                 </div>
 
-                <div class="p-6 border-t border-ink-100">
+                <div class="p-4 sm:p-6 border-t border-ink-100 shrink-0">
                     <button @click="favorites = []; addToast('Semua favorit dihapus')" 
                             x-show="favorites.length > 0"
-                            class="w-full text-sm text-ink-500 hover:text-ink-950 py-2 transition">
+                            class="w-full text-sm text-ink-500 hover:text-ink-950 py-2 transition touch-target tap-active">
                         Hapus semua
                     </button>
                 </div>
@@ -753,8 +809,8 @@
         </div>
     </div>
 
-    <!-- Detail Modal -->
-    <div x-cloak x-show="isDetailModalOpen" class="fixed inset-0 z-[80] overflow-y-auto" style="display: none;">
+    <!-- Detail Modal - Bottom sheet on mobile, centered on desktop -->
+    <div x-cloak x-show="isDetailModalOpen" class="fixed inset-0 z-[80] overflow-hidden" style="display: none;">
         <div x-show="isDetailModalOpen" 
              x-transition:enter="transition ease-out duration-300" 
              x-transition:enter-start="opacity-0" 
@@ -765,89 +821,96 @@
              class="fixed inset-0 bg-ink-950/60 backdrop-blur-sm" 
              @click="isDetailModalOpen = false"></div>
 
-        <div class="relative min-h-screen flex items-end sm:items-center justify-center p-0 sm:p-6">
+        <div class="fixed inset-0 flex items-end sm:items-center justify-center">
             <div x-show="isDetailModalOpen" 
                  x-transition:enter="transition ease-out duration-300 transform" 
-                 x-transition:enter-start="translate-y-8 sm:translate-y-0 sm:scale-95 opacity-0" 
+                 x-transition:enter-start="translate-y-full sm:translate-y-4 sm:scale-95 opacity-0" 
                  x-transition:enter-end="translate-y-0 sm:scale-100 opacity-100" 
                  x-transition:leave="transition ease-in duration-200 transform" 
                  x-transition:leave-start="translate-y-0 sm:scale-100 opacity-100" 
-                 x-transition:leave-end="translate-y-8 sm:translate-y-0 sm:scale-95 opacity-0" 
-                 class="bg-white w-full max-w-4xl rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl relative"
+                 x-transition:leave-end="translate-y-full sm:translate-y-4 sm:scale-95 opacity-0" 
+                 class="bg-white w-full sm:max-w-4xl rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl relative max-h-[92vh] sm:max-h-[85vh] flex flex-col safe-bottom"
                  x-show="selectedCar">
                 
+                <!-- Mobile drag handle -->
+                <div class="sm:hidden flex justify-center py-3 shrink-0" @click="isDetailModalOpen = false">
+                    <div class="w-10 h-1 bg-ink-200 rounded-full"></div>
+                </div>
+
                 <button @click="isDetailModalOpen = false" 
-                        class="absolute top-4 right-4 z-20 w-10 h-10 bg-white/90 backdrop-blur hover:bg-white rounded-full flex items-center justify-center transition shadow-sm">
+                        class="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 w-10 h-10 bg-white/90 backdrop-blur hover:bg-white rounded-full flex items-center justify-center transition shadow-sm touch-target">
                     <i data-lucide="x" class="w-5 h-5 text-ink-700"></i>
                 </button>
 
-                <div class="grid md:grid-cols-2 max-h-[90vh] overflow-y-auto">
-                    <div class="relative aspect-square md:aspect-auto md:h-full bg-ink-100 min-h-[280px]">
-                        <img :src="selectedCar?.image" :alt="selectedCar?.name" 
-                             class="w-full h-full object-cover"
-                             onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=1000'">
-                    </div>
-
-                    <div class="p-8 lg:p-10 space-y-6">
-                        <div>
-                            <div class="text-xs font-medium text-accent uppercase tracking-wider" x-text="selectedCar?.brand + ' · ' + selectedCar?.year"></div>
-                            <h3 class="font-display font-bold text-3xl text-ink-950 mt-2" x-text="selectedCar?.name"></h3>
-                            <div class="flex items-center gap-1.5 mt-3">
-                                <template x-for="i in 5">
-                                    <i data-lucide="star" :class="i <= (selectedCar?.rating || 0) ? 'fill-amber-400 text-amber-400' : 'text-ink-200'" class="w-4 h-4"></i>
-                                </template>
-                                <span class="text-sm text-ink-500 ml-1" x-text="(selectedCar?.rating || 0) + '.0'"></span>
-                            </div>
+                <div class="overflow-y-auto flex-1">
+                    <div class="grid md:grid-cols-2">
+                        <div class="relative aspect-[4/3] md:aspect-auto md:h-full bg-ink-100 min-h-[240px] sm:min-h-[280px]">
+                            <img :src="selectedCar?.image" :alt="selectedCar?.name" 
+                                 class="w-full h-full object-cover"
+                                 onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=1000'">
                         </div>
 
-                        <div class="pb-6 border-b border-ink-100">
-                            <div class="text-xs text-ink-500 mb-1">Harga OTR Mulai</div>
-                            <div class="font-display font-bold text-3xl text-ink-950" x-text="formatRupiah(selectedCar?.price || 0)"></div>
-                        </div>
+                        <div class="p-5 sm:p-8 lg:p-10 space-y-5 sm:space-y-6">
+                            <div>
+                                <div class="text-xs font-medium text-accent uppercase tracking-wider" x-text="selectedCar?.brand + ' · ' + selectedCar?.year"></div>
+                                <h3 class="font-display font-bold text-2xl sm:text-3xl text-ink-950 mt-2" x-text="selectedCar?.name"></h3>
+                                <div class="flex items-center gap-1.5 mt-3">
+                                    <template x-for="i in 5">
+                                        <i data-lucide="star" :class="i <= (selectedCar?.rating || 0) ? 'fill-amber-400 text-amber-400' : 'text-ink-200'" class="w-4 h-4"></i>
+                                    </template>
+                                    <span class="text-sm text-ink-500 ml-1" x-text="(selectedCar?.rating || 0) + '.0'"></span>
+                                </div>
+                            </div>
 
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-ink-50 rounded-xl p-4">
-                                <div class="flex items-center gap-2 text-ink-500 mb-1">
-                                    <i data-lucide="gauge" class="w-4 h-4"></i>
-                                    <span class="text-xs">Jarak Tempuh</span>
-                                </div>
-                                <div class="font-semibold text-ink-950" x-text="selectedCar?.mileage"></div>
+                            <div class="pb-5 sm:pb-6 border-b border-ink-100">
+                                <div class="text-xs text-ink-500 mb-1">Harga OTR Mulai</div>
+                                <div class="font-display font-bold text-2xl sm:text-3xl text-ink-950" x-text="formatRupiah(selectedCar?.price || 0)"></div>
                             </div>
-                            <div class="bg-ink-50 rounded-xl p-4">
-                                <div class="flex items-center gap-2 text-ink-500 mb-1">
-                                    <i data-lucide="battery" class="w-4 h-4"></i>
-                                    <span class="text-xs">Baterai</span>
-                                </div>
-                                <div class="font-semibold text-ink-950" x-text="selectedCar?.batteryCapacity"></div>
-                            </div>
-                            <div class="bg-ink-50 rounded-xl p-4">
-                                <div class="flex items-center gap-2 text-ink-500 mb-1">
-                                    <i data-lucide="settings" class="w-4 h-4"></i>
-                                    <span class="text-xs">Transmisi</span>
-                                </div>
-                                <div class="font-semibold text-ink-950" x-text="selectedCar?.transmission"></div>
-                            </div>
-                            <div class="bg-ink-50 rounded-xl p-4">
-                                <div class="flex items-center gap-2 text-ink-500 mb-1">
-                                    <i data-lucide="users" class="w-4 h-4"></i>
-                                    <span class="text-xs">Kapasitas</span>
-                                </div>
-                                <div class="font-semibold text-ink-950" x-text="(selectedCar?.seats || 0) + ' Kursi'"></div>
-                            </div>
-                        </div>
 
-                        <div class="flex gap-3 pt-2">
-                            <a :href="'https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20' + encodeURIComponent(selectedCar?.name)" 
-                               target="_blank" 
-                               class="flex-1 bg-ink-950 hover:bg-ink-800 text-white font-medium py-3.5 rounded-full transition flex items-center justify-center gap-2 text-sm">
-                                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                                WhatsApp
-                            </a>
-                            <button @click="toggleFavorite(selectedCar?.id)" 
-                                    class="w-12 h-12 border border-ink-200 hover:border-ink-300 rounded-full flex items-center justify-center transition shrink-0"
-                                    :class="isFavorite(selectedCar?.id) ? 'text-accent' : 'text-ink-700'">
-                                <i data-lucide="heart" :class="isFavorite(selectedCar?.id) ? 'fill-current' : ''" class="w-4 h-4"></i>
-                            </button>
+                            <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                                <div class="bg-ink-50 rounded-xl p-3 sm:p-4">
+                                    <div class="flex items-center gap-2 text-ink-500 mb-1">
+                                        <i data-lucide="gauge" class="w-4 h-4"></i>
+                                        <span class="text-xs">Jarak Tempuh</span>
+                                    </div>
+                                    <div class="font-semibold text-sm sm:text-base text-ink-950" x-text="selectedCar?.mileage"></div>
+                                </div>
+                                <div class="bg-ink-50 rounded-xl p-3 sm:p-4">
+                                    <div class="flex items-center gap-2 text-ink-500 mb-1">
+                                        <i data-lucide="battery" class="w-4 h-4"></i>
+                                        <span class="text-xs">Baterai</span>
+                                    </div>
+                                    <div class="font-semibold text-sm sm:text-base text-ink-950" x-text="selectedCar?.batteryCapacity"></div>
+                                </div>
+                                <div class="bg-ink-50 rounded-xl p-3 sm:p-4">
+                                    <div class="flex items-center gap-2 text-ink-500 mb-1">
+                                        <i data-lucide="settings" class="w-4 h-4"></i>
+                                        <span class="text-xs">Transmisi</span>
+                                    </div>
+                                    <div class="font-semibold text-sm sm:text-base text-ink-950" x-text="selectedCar?.transmission"></div>
+                                </div>
+                                <div class="bg-ink-50 rounded-xl p-3 sm:p-4">
+                                    <div class="flex items-center gap-2 text-ink-500 mb-1">
+                                        <i data-lucide="users" class="w-4 h-4"></i>
+                                        <span class="text-xs">Kapasitas</span>
+                                    </div>
+                                    <div class="font-semibold text-sm sm:text-base text-ink-950" x-text="(selectedCar?.seats || 0) + ' Kursi'"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-3 pt-2">
+                                <a :href="'https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20' + encodeURIComponent(selectedCar?.name)" 
+                                   target="_blank" 
+                                   class="flex-1 bg-ink-950 hover:bg-ink-800 text-white font-medium py-3.5 rounded-full transition flex items-center justify-center gap-2 text-sm touch-target tap-active">
+                                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                                    WhatsApp
+                                </a>
+                                <button @click="toggleFavorite(selectedCar?.id)" 
+                                        class="w-12 h-12 border border-ink-200 hover:border-ink-300 rounded-full flex items-center justify-center transition shrink-0 touch-target tap-active"
+                                        :class="isFavorite(selectedCar?.id) ? 'text-accent' : 'text-ink-700'">
+                                    <i data-lucide="heart" :class="isFavorite(selectedCar?.id) ? 'fill-current' : ''" class="w-4 h-4"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -884,10 +947,20 @@
                     this.searchCars();
                     window.addEventListener('scroll', () => {
                         this.scrolled = window.scrollY > 20;
-                    });
-                    this.$nextTick(() => { lucide.createIcons(); });
+                    }, { passive: true });
                     
-                    // Re-render icons on Alpine updates
+                    // Lock body scroll when modal/drawer is open
+                    this.$watch('isWishlistOpen', (val) => {
+                        document.body.style.overflow = val ? 'hidden' : '';
+                    });
+                    this.$watch('isDetailModalOpen', (val) => {
+                        document.body.style.overflow = val ? 'hidden' : '';
+                    });
+                    this.$watch('isMobileMenuOpen', (val) => {
+                        document.body.style.overflow = val ? 'hidden' : '';
+                    });
+                    
+                    this.$nextTick(() => { lucide.createIcons(); });
                     this.$watch('filteredCars', () => this.$nextTick(() => lucide.createIcons()));
                     this.$watch('favorites', () => this.$nextTick(() => lucide.createIcons()));
                     this.$watch('isMobileMenuOpen', () => this.$nextTick(() => lucide.createIcons()));
@@ -931,7 +1004,6 @@
                     if (!car) return;
                     this.selectedCar = car;
                     this.isDetailModalOpen = true;
-                    document.body.style.overflow = 'hidden';
                 },
 
                 addToast(message) {
