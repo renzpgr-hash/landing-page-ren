@@ -157,8 +157,21 @@
                         <span>Test Drive</span>
                         <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </a>
-
-                    
+<button @click="isMobileMenuOpen = !isMobileMenuOpen" 
+        class="lg:hidden p-2.5 rounded-xl transition-all duration-300 touch-target relative z-[100] group
+               bg-black/30 backdrop-blur-sm
+               border border-white/30
+               shadow-[0_0_30px_rgba(0,0,0,0.4)]
+               hover:bg-black/50 hover:scale-105
+               active:scale-95
+               hover:border-white/50">
+    
+    <i :data-lucide="isMobileMenuOpen ? 'x' : 'menu'" 
+       class="w-6 h-6 text-white 
+              drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]
+              transition-transform duration-300
+              group-hover:rotate-90"></i>
+</button>
                     </button>
                 </div>
             </div>
