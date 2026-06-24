@@ -58,75 +58,59 @@
         body { 
             font-feature-settings: 'ss01', 'cv11'; 
             -webkit-font-smoothing: antialiased;
-            /* Safe area padding for notched devices */
             padding-left: env(safe-area-inset-left);
             padding-right: env(safe-area-inset-right);
         }
         
-        /* Subtle scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #d9d9de; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #91919f; }
         
-        /* Hide scrollbar for horizontal scroll */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
         [x-cloak] { display: none !important; }
         
-        /* Smooth image loading */
         img { transition: opacity 0.4s ease; }
         
-        /* Subtle hover lift - desktop only */
         @media (hover: hover) {
             .lift { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease; }
             .lift:hover { transform: translateY(-2px); }
         }
         
-        /* Marquee for brand strip */
         @keyframes marquee {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
         .marquee-track { animation: marquee 40s linear infinite; }
         
-        /* Number ticker */
         .stat-number { font-variant-numeric: tabular-nums; }
-        
-        /* Touch targets - min 44px for iOS/Android */
         .touch-target { min-height: 44px; min-width: 44px; }
         
-        /* Prevent iOS zoom on input focus */
         @media (max-width: 768px) {
             input, select, textarea { font-size: 16px !important; }
         }
         
-        /* Smooth transitions for mobile drawer */
         .mobile-drawer {
             transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
         }
         
-        /* Bottom sheet animation for mobile */
         @keyframes slideUp {
             from { transform: translateY(100%); }
             to { transform: translateY(0); }
         }
         
-        /* Header safe area */
         .safe-top { padding-top: env(safe-area-inset-top); }
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
         
-        /* Responsive typography clamp */
         .fluid-h1 { font-size: clamp(2.25rem, 8vw, 4.5rem); }
         .fluid-h2 { font-size: clamp(1.875rem, 6vw, 3rem); }
         .fluid-h3 { font-size: clamp(1.5rem, 4vw, 2.25rem); }
         
-        /* Hide scrollbar but allow scroll */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Active state for mobile */
         @media (hover: none) {
             .tap-active:active { transform: scale(0.97); transition: transform 0.1s; }
         }
@@ -134,7 +118,7 @@
 </head>
 <body class="bg-white text-ink-900 font-sans antialiased overflow-x-hidden" x-data="carDealerApp()" x-init="init()">
 
-    <!-- Toast Notifications - Responsive positioning -->
+    <!-- Toast Notifications -->
     <div class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-[100] flex flex-col gap-2 max-w-sm safe-bottom pointer-events-none">
         <template x-for="toast in toasts" :key="toast.id">
             <div class="bg-ink-950 text-white px-5 py-3.5 rounded-xl shadow-lg flex items-center justify-between gap-4 text-sm pointer-events-auto"
@@ -154,13 +138,11 @@
             :class="scrolled ? 'bg-white/80 backdrop-blur-xl border-b border-ink-100' : 'bg-transparent'">
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
             <div class="flex items-center justify-between h-14 sm:h-16 lg:h-20">
-                <!-- Logo -->
                 <a href="#" class="flex items-center gap-2 shrink-0 touch-target">
                     <span class="font-display font-bold text-lg sm:text-xl tracking-tightest">BYD</span>
                     <span class="hidden sm:inline text-ink-400 text-sm font-normal">Indonesia</span>
                 </a>
 
-                <!-- Desktop Nav -->
                 <nav class="hidden lg:flex items-center gap-10 text-sm font-medium text-ink-600">
                     <a href="#katalog" class="hover:text-ink-950 transition">Model</a>
                     <a href="#teknologi" class="hover:text-ink-950 transition">Teknologi</a>
@@ -168,7 +150,6 @@
                     <a href="#hubungi" class="hover:text-ink-950 transition">Kontak</a>
                 </nav>
 
-                <!-- Actions -->
                 <div class="flex items-center gap-1 sm:gap-2">
                     <button @click="isWishlistOpen = true" class="relative p-2 sm:p-2.5 text-ink-700 hover:text-ink-950 transition rounded-full hover:bg-ink-50 touch-target flex items-center justify-center">
                         <i data-lucide="heart" class="w-5 h-5"></i>
@@ -185,7 +166,6 @@
                 </div>
             </div>
 
-            <!-- Mobile Menu - Full screen overlay -->
             <div x-cloak x-show="isMobileMenuOpen" 
                  x-transition:enter="transition ease-out duration-200"
                  x-transition:enter-start="opacity-0"
@@ -232,7 +212,6 @@
                     </a>
                 </div>
                 
-                <!-- Stats -->
                 <div class="grid grid-cols-3 gap-4 sm:gap-6 pt-6 sm:pt-8 border-t border-ink-100">
                     <div>
                         <div class="font-display font-bold text-xl sm:text-2xl text-ink-950 stat-number">650<span class="text-ink-400 text-xs sm:text-base">km</span></div>
@@ -249,7 +228,6 @@
                 </div>
             </div>
 
-            <!-- Hero Image -->
             <div class="lg:col-span-7 relative order-1 lg:order-2">
                 <div class="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[16/10] rounded-2xl sm:rounded-3xl overflow-hidden bg-ink-100">
                     <img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=1600" 
@@ -259,7 +237,6 @@
                          onerror="this.src='https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&q=80&w=1600'">
                     <div class="absolute inset-0 bg-gradient-to-t from-ink-950/30 via-transparent to-transparent"></div>
                     
-                    <!-- Floating card -->
                     <div class="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 bg-white/95 backdrop-blur-xl rounded-xl sm:rounded-2xl p-4 sm:p-5 flex items-center justify-between gap-3 sm:gap-4 shadow-lg">
                         <div class="min-w-0">
                             <div class="text-[11px] sm:text-xs text-ink-500 font-medium">Mulai dari</div>
@@ -306,10 +283,10 @@
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
             <div class="grid lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-20 items-center">
                 <div class="lg:col-span-7 order-2 lg:order-1">
-                    <div class="relative aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden bg-ink-100">
+                    <div class="relative aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden bg-ink-50 flex items-center justify-center">
                         <img src="https://imgcdn.oto.com/large/gallery/exterior/177/3039/byd-m6-front-angle-low-view-779791.jpg?tr=w-1200,h=900" 
                              alt="BYD M6" 
-                             class="w-full h-full object-cover"
+                             class="w-full h-full object-contain p-6"
                              loading="lazy"
                              onerror="this.src='https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&q=80&w=1200'">
                     </div>
@@ -371,7 +348,6 @@
                     </p>
                 </div>
                 
-                <!-- Filter Pills - Horizontal scroll on mobile -->
                 <div class="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap">
                     <button @click="searchBodyType = 'all'; searchCars()" 
                             :class="searchBodyType === 'all' ? 'bg-ink-950 text-white' : 'bg-white text-ink-700 border border-ink-200 hover:border-ink-300'"
@@ -401,14 +377,13 @@
                 </div>
             </div>
 
-            <!-- Car Grid - 1 col mobile, 2 col tablet, 3 col desktop -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <template x-for="car in filteredCars" :key="car.id">
                     <div class="group bg-white rounded-2xl overflow-hidden border border-ink-100 hover:border-ink-200 cursor-pointer tap-active"
                          @click="openCarDetail(car)">
-                        <div class="relative aspect-[4/3] bg-ink-100 overflow-hidden">
+                        <div class="relative aspect-[4/3] bg-ink-50 overflow-hidden flex items-center justify-center">
                             <img :src="car.image" :alt="car.name" 
-                                 class="w-full h-full object-cover transition duration-700"
+                                 class="w-full h-full object-contain p-4 transition duration-700"
                                  loading="lazy"
                                  onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=800'">
                             
@@ -431,7 +406,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Specs - Stack on small mobile -->
                             <div class="flex items-center gap-3 sm:gap-4 text-xs text-ink-500 py-3 sm:py-4 border-y border-ink-100 overflow-x-auto scrollbar-hide">
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <i data-lucide="gauge" class="w-3.5 h-3.5"></i>
@@ -462,7 +436,6 @@
                 </template>
             </div>
 
-            <!-- Empty state -->
             <div x-show="filteredCars.length === 0" class="text-center py-16 sm:py-20">
                 <div class="inline-flex w-14 h-14 bg-ink-100 rounded-full items-center justify-center mb-4">
                     <i data-lucide="search-x" class="w-6 h-6 text-ink-400"></i>
@@ -489,7 +462,6 @@
                 </h2>
             </div>
 
-            <!-- Grid - Stack on mobile, 3 cols on desktop -->
             <div class="grid md:grid-cols-3 gap-px bg-ink-800 rounded-2xl overflow-hidden">
                 <div class="bg-ink-950 p-6 sm:p-8 lg:p-10 transition group">
                     <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-ink-800 flex items-center justify-center mb-5 sm:mb-6 group-hover:bg-accent transition">
@@ -532,7 +504,6 @@
                 </h2>
             </div>
 
-            <!-- Stack on mobile, 3 cols on desktop -->
             <div class="grid md:grid-cols-3 gap-4 sm:gap-6">
                 <div class="bg-ink-50/70 rounded-2xl p-6 sm:p-8 border border-ink-100">
                     <div class="flex gap-0.5 mb-4 sm:mb-5">
@@ -737,7 +708,7 @@
         </div>
     </footer>
 
-    <!-- Wishlist Drawer - Full screen on mobile, side drawer on desktop -->
+    <!-- Wishlist Drawer -->
     <div x-cloak x-show="isWishlistOpen" class="fixed inset-0 z-[90]" style="display: none;">
         <div x-show="isWishlistOpen" 
              x-transition:enter="transition ease-out duration-300" 
@@ -782,9 +753,9 @@
 
                     <template x-for="carId in favorites" :key="carId">
                         <div class="flex gap-3 sm:gap-4 p-3 border border-ink-100 rounded-xl hover:border-ink-200 transition items-center">
-                            <div class="w-16 h-14 sm:w-20 sm:h-16 rounded-lg overflow-hidden bg-ink-100 shrink-0">
+                            <div class="w-16 h-14 sm:w-20 sm:h-16 rounded-lg overflow-hidden bg-ink-50 flex items-center justify-center shrink-0">
                                 <img :src="getCarById(carId)?.image" :alt="getCarById(carId)?.name" 
-                                     class="w-full h-full object-cover"
+                                     class="w-full h-full object-contain p-1"
                                      onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=200'">
                             </div>
                             <div class="flex-grow min-w-0">
@@ -809,7 +780,7 @@
         </div>
     </div>
 
-    <!-- Detail Modal - Bottom sheet on mobile, centered on desktop -->
+    <!-- Detail Modal -->
     <div x-cloak x-show="isDetailModalOpen" class="fixed inset-0 z-[80] overflow-hidden" style="display: none;">
         <div x-show="isDetailModalOpen" 
              x-transition:enter="transition ease-out duration-300" 
@@ -832,7 +803,6 @@
                  class="bg-white w-full sm:max-w-4xl rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl relative max-h-[92vh] sm:max-h-[85vh] flex flex-col safe-bottom"
                  x-show="selectedCar">
                 
-                <!-- Mobile drag handle -->
                 <div class="sm:hidden flex justify-center py-3 shrink-0" @click="isDetailModalOpen = false">
                     <div class="w-10 h-1 bg-ink-200 rounded-full"></div>
                 </div>
@@ -844,9 +814,9 @@
 
                 <div class="overflow-y-auto flex-1">
                     <div class="grid md:grid-cols-2">
-                        <div class="relative aspect-[4/3] md:aspect-auto md:h-full bg-ink-100 min-h-[240px] sm:min-h-[280px]">
+                        <div class="relative aspect-[4/3] md:aspect-auto md:h-full bg-ink-50 flex items-center justify-center min-h-[240px] sm:min-h-[280px]">
                             <img :src="selectedCar?.image" :alt="selectedCar?.name" 
-                                 class="w-full h-full object-cover"
+                                 class="w-full h-full object-contain p-6"
                                  onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=1000'">
                         </div>
 
@@ -949,7 +919,6 @@
                         this.scrolled = window.scrollY > 20;
                     }, { passive: true });
                     
-                    // Lock body scroll when modal/drawer is open
                     this.$watch('isWishlistOpen', (val) => {
                         document.body.style.overflow = val ? 'hidden' : '';
                     });
