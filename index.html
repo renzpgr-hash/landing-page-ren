@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <button class="relative p-2 text-white/90 hover:text-white transition-colors group nav-icon drop-shadow-sm" onclick="toggleFavorites()">
+                    <button class="relative p-2 text-white/90 hover:text-white transition-colors group nav-icon drop-shadow-sm" onclick="openFavoritesModal()">
                         <i class="fa-regular fa-heart text-xl group-hover:scale-110 transition-transform"></i>
                         <span id="fav-count" class="absolute top-0 right-0 h-4 w-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full opacity-0 transition-opacity">0</span>
                     </button>
@@ -355,10 +355,10 @@
 
     <!-- MODAL: Car Details -->
     <div id="car-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('car-modal')"></div>
         
         <div class="relative bg-white w-full max-w-5xl mx-4 rounded-2xl shadow-2xl overflow-hidden modal-content flex flex-col md:flex-row max-h-[90vh]">
-            <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-colors shadow-sm text-white hover:text-black">
+            <button onclick="closeModal('car-modal')" class="absolute top-4 right-4 z-10 w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-colors shadow-sm text-white hover:text-black">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
 
@@ -395,10 +395,34 @@
                         <i class="fa-brands fa-whatsapp text-xl mr-2 group-hover:scale-110 transition-transform"></i>
                         Hubungi Dealer via WhatsApp
                     </a>
-                    <button onclick="closeModal(); document.getElementById('calculator').scrollIntoView({behavior: 'smooth'})" class="w-full border border-gray-300 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <button onclick="closeModal('car-modal'); document.getElementById('calculator').scrollIntoView({behavior: 'smooth'})" class="w-full border border-gray-300 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-50 transition-colors">
                         Simulasi Kredit
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Favorites List -->
+    <div id="favorites-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('favorites-modal')"></div>
+        
+        <div class="relative bg-white w-full max-w-2xl mx-4 rounded-2xl shadow-2xl overflow-hidden modal-content flex flex-col max-h-[80vh]">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-red-500"></i> Mobil Favorit Saya
+                </h2>
+                <button onclick="closeModal('favorites-modal')" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div id="favorites-list" class="p-6 overflow-y-auto flex-grow space-y-4">
+                <!-- Favorite items injected here -->
+            </div>
+
+            <div class="p-6 border-t border-gray-100 bg-gray-50 text-center">
+                <button onclick="closeModal('favorites-modal')" class="px-8 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">Tutup</button>
             </div>
         </div>
     </div>
@@ -591,7 +615,52 @@
             }, 3000);
         }
 
-        // Modal Logic
+        // --- Favorites Modal Logic ---
+        window.openFavoritesModal = function() {
+            const listContainer = document.getElementById('favorites-list');
+            listContainer.innerHTML = '';
+
+            if (favorites.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-10">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-regular fa-heart text-2xl text-gray-400"></i>
+                        </div>
+                        <p class="text-gray-500 font-medium">Belum ada mobil favorit.</p>
+                        <p class="text-sm text-gray-400 mt-1">Klik ikon hati pada mobil untuk menambahkannya.</p>
+                    </div>
+                `;
+            } else {
+                favorites.forEach(favId => {
+                    const car = cars.find(c => c.id === favId);
+                    if (car) {
+                        const imgUrl = getImageUrl(car.imagePrompt, car.seed);
+                        const item = document.createElement('div');
+                        item.className = 'flex items-center gap-4 bg-gray-50 p-3 rounded-xl border border-gray-100';
+                        item.innerHTML = `
+                            <img src="${imgUrl}" class="w-20 h-20 object-cover rounded-lg bg-gray-200">
+                            <div class="flex-grow">
+                                <h4 class="font-bold text-gray-900">${car.name}</h4>
+                                <p class="text-sm text-gray-500">${car.tagline}</p>
+                                <p class="text-sm font-bold text-blue-600 mt-1">${car.priceStr}</p>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <button onclick="openModal(${car.id}); closeModal('favorites-modal')" class="px-3 py-1.5 bg-black text-white text-xs font-bold rounded hover:bg-gray-800">Detail</button>
+                                <button onclick="toggleLike(${car.id}, null); openFavoritesModal()" class="px-3 py-1.5 border border-red-200 text-red-500 text-xs font-bold rounded hover:bg-red-50"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        `;
+                        listContainer.appendChild(item);
+                    }
+                });
+            }
+
+            const modal = document.getElementById('favorites-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('open'), 10);
+            document.body.style.overflow = 'hidden';
+        };
+
+        // --- General Modal Logic ---
         window.openModal = function(id) {
             const car = cars.find(c => c.id === id);
             if (!car) return;
@@ -620,11 +689,11 @@
             document.body.style.overflow = 'hidden';
         };
 
-        window.closeModal = function() {
-            const modal = document.getElementById('car-modal');
+        window.closeModal = function(modalId) {
+            const modal = document.getElementById(modalId);
             modal.classList.remove('open');
             setTimeout(() => {
-                // modal.classList.add('hidden');
+                // modal.classList.add('hidden'); // Optional
             }, 300);
             document.body.style.overflow = '';
         };
@@ -633,14 +702,6 @@
             const selectedCarName = document.getElementById('calc-car').options[document.getElementById('calc-car').selectedIndex].text.split(' - ')[0];
             const message = `Halo Dealer BYD, saya ingin mengajukan kredit untuk mobil *${selectedCarName}*. Mohon bantuannya.`;
             window.open(`https://wa.me/6281234567890?text=${encodeURIComponent(message)}`, '_blank');
-        }
-
-        window.toggleFavorites = function() {
-            if(favorites.length === 0) {
-                showToast("Belum ada mobil favorit");
-            } else {
-                showToast(`Ada ${favorites.length} mobil di favorit Anda`);
-            }
         }
 
         // --- Calculator Logic ---
@@ -724,4 +785,5 @@
     </script>
 </body>
 </html>
+
 
