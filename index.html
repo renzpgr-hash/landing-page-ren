@@ -20,7 +20,7 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #1a1a1a; overflow-x: hidden; }
         
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
@@ -44,11 +44,14 @@
 
         /* Range Slider Styling */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #000; cursor: pointer; margin-top: -8px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: #fff; border: 2px solid #000; cursor: pointer; margin-top: -10px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e2e8f0; border-radius: 2px; }
         
         /* Glassmorphism */
         .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
+
+        /* Mobile Menu Transition */
+        #mobile-menu { transition: transform 0.3s ease-in-out; }
     </style>
 </head>
 <body class="antialiased selection:bg-black selection:text-white">
@@ -65,13 +68,14 @@
 
     <!-- Navigation -->
     <nav id="navbar" class="fixed w-full z-40 transition-all duration-300 bg-transparent py-4">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex-shrink-0 cursor-pointer flex items-center gap-3">
                     <div class="w-10 h-10 bg-black text-white flex items-center justify-center font-bold rounded-lg shadow-lg">B</div>
                     <span class="font-bold text-xl tracking-tight text-white drop-shadow-md nav-text">BYD Auto</span>
                 </div>
 
+                <!-- Desktop Menu -->
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-8">
                         <a href="#models" class="text-sm font-medium text-white/90 hover:text-white transition-colors nav-link drop-shadow-sm">Model</a>
@@ -81,6 +85,7 @@
                     </div>
                 </div>
 
+                <!-- Right Actions -->
                 <div class="flex items-center gap-4">
                     <button class="relative p-2 text-white/90 hover:text-white transition-colors group nav-icon drop-shadow-sm" onclick="openFavoritesModal()">
                         <i class="fa-regular fa-heart text-xl group-hover:scale-110 transition-transform"></i>
@@ -89,102 +94,114 @@
                     <button class="hidden md:block bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg">
                         Test Drive
                     </button>
-                    <button class="md:hidden text-white text-xl nav-icon drop-shadow-sm"><i class="fa-solid fa-bars"></i></button>
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden text-white text-xl nav-icon drop-shadow-sm focus:outline-none">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section with Video/Image Parallax -->
-    <section class="relative h-screen min-h-[800px] flex items-center justify-center overflow-hidden">
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 z-50 bg-black/95 transform translate-x-full md:hidden flex flex-col justify-center items-center space-y-8">
+        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-white text-3xl">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <a href="#models" onclick="toggleMobileMenu()" class="text-2xl font-bold text-white hover:text-blue-400">Model</a>
+        <a href="#calculator" onclick="toggleMobileMenu()" class="text-2xl font-bold text-white hover:text-blue-400">Simulasi Kredit</a>
+        <a href="#news" onclick="toggleMobileMenu()" class="text-2xl font-bold text-white hover:text-blue-400">Berita</a>
+        <a href="#technology" onclick="toggleMobileMenu()" class="text-2xl font-bold text-white hover:text-blue-400">Teknologi</a>
+        <a href="#contact" onclick="toggleMobileMenu()" class="text-2xl font-bold text-white hover:text-blue-400">Hubungi Kami</a>
+        <button class="bg-white text-black px-8 py-3 rounded-full font-bold mt-4">Test Drive</button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 z-0">
             <img id="hero-bg" src="" alt="BYD Hero" class="w-full h-full object-cover opacity-0 transition-opacity duration-1000 scale-105">
-            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-white"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-white"></div>
         </div>
 
         <div class="relative z-10 text-center px-4 max-w-5xl mx-auto mt-16">
             <span class="inline-block py-1 px-4 rounded-full glass text-xs font-bold tracking-widest text-gray-800 mb-6 reveal border-none">
                 OFFICIAL DEALER INDONESIA
             </span>
-            <h1 class="text-6xl md:text-8xl font-bold text-white tracking-tight mb-6 reveal drop-shadow-lg" style="transition-delay: 100ms;">
+            <h1 class="text-4xl md:text-7xl font-bold text-white tracking-tight mb-6 reveal drop-shadow-lg leading-tight" style="transition-delay: 100ms;">
                 BUILD YOUR DREAMS
             </h1>
-            <p class="text-lg md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto font-light reveal drop-shadow-md" style="transition-delay: 200ms;">
+            <p class="text-base md:text-xl text-white/90 mb-10 max-w-2xl mx-auto font-light reveal drop-shadow-md" style="transition-delay: 200ms;">
                 Revolusi mobilitas listrik dengan teknologi Blade Battery yang aman, efisien, dan berkelanjutan.
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center reveal" style="transition-delay: 300ms;">
-                <a href="#models" class="bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-gray-100 transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
+            <div class="flex flex-col sm:flex-row gap-4 justify-center reveal px-4" style="transition-delay: 300ms;">
+                <a href="#models" class="bg-white text-black px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-center">
                     Jelajahi Model
                 </a>
-                <a href="#contact" class="glass text-black px-10 py-4 rounded-full font-bold hover:bg-white/90 transition-all shadow-xl">
+                <a href="#contact" class="glass text-black px-8 py-4 rounded-full font-bold hover:bg-white/90 transition-all shadow-xl text-center">
                     Hubungi Kami
                 </a>
             </div>
         </div>
 
         <!-- Scroll Indicator -->
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-gray-800">
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce text-gray-800">
             <i class="fa-solid fa-chevron-down text-2xl"></i>
         </div>
     </section>
 
     <!-- Stats Banner -->
-    <section class="py-12 bg-white border-b border-gray-100 relative z-20 -mt-20 mx-4 md:mx-12 rounded-2xl shadow-xl glass">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-100">
-            <div class="reveal">
-                <p class="text-3xl font-bold text-gray-900">Blade Battery</p>
-                <p class="text-sm text-gray-500 mt-1 font-medium">Teraman di Kelasnya</p>
+    <section class="py-8 bg-white border-b border-gray-100 relative z-20 -mt-10 mx-4 md:mx-12 rounded-2xl shadow-xl glass">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center divide-x-0 md:divide-x divide-gray-100">
+            <div class="reveal p-2">
+                <p class="text-xl md:text-3xl font-bold text-gray-900">Blade Battery</p>
+                <p class="text-xs md:text-sm text-gray-500 mt-1 font-medium">Teraman di Kelasnya</p>
             </div>
-            <div class="reveal" style="transition-delay: 100ms;">
-                <p class="text-3xl font-bold text-gray-900">e-Platform 3.0</p>
-                <p class="text-sm text-gray-500 mt-1 font-medium">Efisiensi Maksimal</p>
+            <div class="reveal p-2" style="transition-delay: 100ms;">
+                <p class="text-xl md:text-3xl font-bold text-gray-900">e-Platform 3.0</p>
+                <p class="text-xs md:text-sm text-gray-500 mt-1 font-medium">Efisiensi Maksimal</p>
             </div>
-            <div class="reveal" style="transition-delay: 200ms;">
-                <p class="text-3xl font-bold text-gray-900">DiLink 4.0</p>
-                <p class="text-sm text-gray-500 mt-1 font-medium">Smart Connectivity</p>
+            <div class="reveal p-2" style="transition-delay: 200ms;">
+                <p class="text-xl md:text-3xl font-bold text-gray-900">DiLink 4.0</p>
+                <p class="text-xs md:text-sm text-gray-500 mt-1 font-medium">Smart Connectivity</p>
             </div>
-            <div class="reveal" style="transition-delay: 300ms;">
-                <p class="text-3xl font-bold text-gray-900">8 Tahun</p>
-                <p class="text-sm text-gray-500 mt-1 font-medium">Garansi Baterai</p>
+            <div class="reveal p-2" style="transition-delay: 300ms;">
+                <p class="text-xl md:text-3xl font-bold text-gray-900">8 Tahun</p>
+                <p class="text-xs md:text-sm text-gray-500 mt-1 font-medium">Garansi Baterai</p>
             </div>
         </div>
     </section>
 
     <!-- Models Showcase -->
-    <section id="models" class="py-24 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal">
+    <section id="models" class="py-16 md:py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-10 md:mb-16 reveal">
                 <div>
-                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Pilihan Model</h2>
-                    <p class="text-gray-600 max-w-md text-lg">Desain futuristik bertemu dengan performa tinggi. Pilih mobil yang mendefinisikan gaya hidup Anda.</p>
-                </div>
-                <div class="hidden md:flex gap-2">
-                    <button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition-colors"><i class="fa-solid fa-arrow-right"></i></button>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 md:mb-4">Pilihan Model</h2>
+                    <p class="text-gray-600 max-w-md text-base md:text-lg">Desain futuristik bertemu dengan performa tinggi.</p>
                 </div>
             </div>
 
-            <div id="car-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div id="car-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 <!-- Cards injected via JS -->
             </div>
         </div>
     </section>
 
     <!-- Interactive Credit Calculator -->
-    <section id="calculator" class="py-24 bg-white overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="bg-black rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row reveal">
+    <section id="calculator" class="py-16 md:py-24 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-black rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row reveal">
                 
                 <!-- Left: Form -->
-                <div class="lg:w-1/2 p-8 md:p-12 text-white">
-                    <h2 class="text-3xl font-bold mb-2">Simulasi Kredit</h2>
-                    <p class="text-gray-400 mb-8">Rencanakan kepemilikan mobil impian Anda dengan cicilan yang terjangkau.</p>
+                <div class="lg:w-1/2 p-6 md:p-12 text-white">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-2">Simulasi Kredit</h2>
+                    <p class="text-gray-400 mb-8 text-sm md:text-base">Rencanakan kepemilikan mobil impian Anda.</p>
                     
                     <div class="space-y-8">
                         <!-- Car Selection -->
                         <div>
                             <label class="block text-sm font-medium text-gray-300 mb-3">Pilih Model</label>
-                            <select id="calc-car" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors">
+                            <select id="calc-car" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm md:text-base">
                                 <!-- Options injected via JS -->
                             </select>
                         </div>
@@ -218,11 +235,11 @@
                 </div>
 
                 <!-- Right: Result -->
-                <div class="lg:w-1/2 bg-gray-900 p-8 md:p-12 flex flex-col justify-center relative">
+                <div class="lg:w-1/2 bg-gray-900 p-6 md:p-12 flex flex-col justify-center relative">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
                     
-                    <h3 class="text-gray-400 text-sm uppercase tracking-widest mb-2">Estimasi Cicilan Per Bulan</h3>
-                    <div class="text-5xl md:text-6xl font-bold text-white mb-6" id="monthly-installment">Rp 0</div>
+                    <h3 class="text-gray-400 text-xs md:text-sm uppercase tracking-widest mb-2">Estimasi Cicilan Per Bulan</h3>
+                    <div class="text-3xl md:text-5xl font-bold text-white mb-6 break-words" id="monthly-installment">Rp 0</div>
                     
                     <div class="space-y-4 border-t border-gray-800 pt-6">
                         <div class="flex justify-between text-sm">
@@ -239,55 +256,54 @@
                         </div>
                     </div>
 
-                    <button onclick="openModalFromCalc()" class="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-900/50">
+                    <button onclick="openModalFromCalc()" class="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-900/50 text-sm md:text-base">
                         Ajukan Kredit Sekarang
                     </button>
-                    <p class="text-xs text-gray-500 mt-4 text-center">*Angka ini adalah estimasi. Hubungi dealer untuk penawaran resmi.</p>
+                    <p class="text-xs text-gray-500 mt-4 text-center">*Angka ini adalah estimasi.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- News Section -->
-    <section id="news" class="py-24 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16 reveal">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Berita & Update</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Ikuti perkembangan terbaru dari dunia otomotif listrik dan inovasi BYD.</p>
+    <section id="news" class="py-16 md:py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10 md:mb-16 reveal">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Berita & Update</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">Perkembangan terbaru dari dunia otomotif listrik.</p>
             </div>
 
-            <div id="news-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div id="news-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                 <!-- News Items injected via JS -->
             </div>
             
-            <div class="mt-12 text-center">
-                <button class="px-8 py-3 border border-gray-300 rounded-full text-gray-700 font-medium hover:bg-black hover:text-white hover:border-black transition-all">Lihat Semua Berita</button>
+            <div class="mt-10 md:mt-12 text-center">
+                <button class="px-8 py-3 border border-gray-300 rounded-full text-gray-700 font-medium hover:bg-black hover:text-white hover:border-black transition-all text-sm">Lihat Semua Berita</button>
             </div>
         </div>
     </section>
 
     <!-- Technology Deep Dive -->
-    <section id="technology" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex flex-col lg:flex-row items-center gap-16 mb-24 reveal">
+    <section id="technology" class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-8 md:gap-16 mb-16 md:mb-24 reveal">
                 <div class="lg:w-1/2 order-2 lg:order-1">
                     <div class="img-zoom-container rounded-2xl overflow-hidden shadow-2xl relative group">
-                        <img id="feat-img-1" src="" alt="Blade Battery" class="w-full h-[400px] object-cover img-zoom">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors"></div>
+                        <img id="feat-img-1" src="" alt="Blade Battery" class="w-full h-[300px] md:h-[400px] object-cover img-zoom">
                     </div>
                 </div>
                 <div class="lg:w-1/2 order-1 lg:order-2">
                     <div class="inline-block p-3 bg-blue-50 rounded-xl mb-6">
                         <i class="fa-solid fa-battery-full text-blue-600 text-2xl"></i>
                     </div>
-                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Blade Battery Technology</h3>
-                    <p class="text-gray-600 leading-relaxed mb-6 text-lg">
-                        Baterai LFP (Lithium Iron Phosphate) pertama di dunia yang lolos uji penetrasi kuku. Lebih aman, lebih tahan lama, dan kapasitas lebih besar dalam ruang yang lebih efisien.
+                    <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Blade Battery Technology</h3>
+                    <p class="text-gray-600 leading-relaxed mb-6 text-base md:text-lg">
+                        Baterai LFP pertama di dunia yang lolos uji penetrasi kuku. Lebih aman, lebih tahan lama.
                     </p>
-                    <ul class="space-y-4 text-gray-700">
-                        <li class="flex items-center bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check-circle text-green-500 mr-3"></i> Tahan terhadap suhu ekstrem (-20°C hingga 60°C)</li>
+                    <ul class="space-y-3 text-gray-700 text-sm md:text-base">
+                        <li class="flex items-center bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check-circle text-green-500 mr-3"></i> Tahan suhu ekstrem (-20°C hingga 60°C)</li>
                         <li class="flex items-center bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check-circle text-green-500 mr-3"></i> Siklus pengisian daya > 3000 kali</li>
-                        <li class="flex items-center bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check-circle text-green-500 mr-3"></i> Struktur super kuat melindungi sel baterai</li>
+                        <li class="flex items-center bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check-circle text-green-500 mr-3"></i> Struktur super kuat</li>
                     </ul>
                 </div>
             </div>
@@ -295,18 +311,18 @@
     </section>
 
     <!-- Contact Us Section -->
-    <section id="contact" class="py-24 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16 reveal">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Hubungi Kami</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Tim sales profesional kami siap membantu Anda menemukan mobil listrik impian.</p>
+    <section id="contact" class="py-16 md:py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10 md:mb-16 reveal">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Hubungi Kami</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">Tim sales profesional kami siap membantu Anda.</p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white rounded-3xl shadow-xl overflow-hidden reveal">
-                <!-- Contact Info & Map -->
-                <div class="p-8 lg:p-12 bg-black text-white flex flex-col justify-between">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 bg-white rounded-2xl md:rounded-3xl shadow-xl overflow-hidden reveal">
+                <!-- Contact Info -->
+                <div class="p-6 md:p-12 bg-black text-white flex flex-col justify-between">
                     <div>
-                        <h3 class="text-2xl font-bold mb-6">Informasi Kontak</h3>
+                        <h3 class="text-xl md:text-2xl font-bold mb-6">Informasi Kontak</h3>
                         <div class="space-y-6">
                             <div class="flex items-start gap-4">
                                 <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center shrink-0">
@@ -314,7 +330,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-lg">Showroom Utama</h4>
-                                    <p class="text-gray-400 text-sm mt-1">Jl. Jend. Sudirman No. 123, Jakarta Pusat, 10220</p>
+                                    <p class="text-gray-400 text-sm mt-1">Jl. Jend. Sudirman No. 123, Jakarta Pusat</p>
                                 </div>
                             </div>
                             <div class="flex items-start gap-4">
@@ -324,7 +340,6 @@
                                 <div>
                                     <h4 class="font-bold text-lg">Telepon & WhatsApp</h4>
                                     <p class="text-gray-400 text-sm mt-1">+62 21 1234 5678</p>
-                                    <p class="text-gray-400 text-sm">+62 812 3456 7890 (WhatsApp Only)</p>
                                 </div>
                             </div>
                             <div class="flex items-start gap-4">
@@ -334,17 +349,6 @@
                                 <div>
                                     <h4 class="font-bold text-lg">Email</h4>
                                     <p class="text-gray-400 text-sm mt-1">sales@byd-indonesia.id</p>
-                                    <p class="text-gray-400 text-sm">support@byd-indonesia.id</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center shrink-0">
-                                    <i class="fa-solid fa-clock text-blue-400"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-lg">Jam Operasional</h4>
-                                    <p class="text-gray-400 text-sm mt-1">Senin - Sabtu: 09.00 - 18.00 WIB</p>
-                                    <p class="text-gray-400 text-sm">Minggu: 10.00 - 17.00 WIB</p>
                                 </div>
                             </div>
                         </div>
@@ -356,47 +360,45 @@
                             <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors"><i class="fa-brands fa-instagram"></i></a>
                             <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors"><i class="fa-brands fa-facebook-f"></i></a>
                             <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors"><i class="fa-brands fa-youtube"></i></a>
-                            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors"><i class="fa-brands fa-tiktok"></i></a>
                         </div>
                     </div>
                 </div>
 
                 <!-- Contact Form -->
-                <div class="p-8 lg:p-12">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Kirim Pesan</h3>
-                    <form onsubmit="event.preventDefault(); alert('Pesan Anda telah terkirim! Tim kami akan segera menghubungi Anda.');" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-6 md:p-12">
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-6">Kirim Pesan</h3>
+                    <form onsubmit="event.preventDefault(); alert('Pesan Anda telah terkirim!');" class="space-y-4 md:space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
-                                <input type="text" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors" placeholder="John Doe" required>
+                                <input type="text" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors text-sm" placeholder="John Doe" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
-                                <input type="tel" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors" placeholder="0812..." required>
+                                <input type="tel" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors text-sm" placeholder="0812..." required>
                             </div>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors" placeholder="nama@email.com" required>
+                            <input type="email" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors text-sm" placeholder="nama@email.com" required>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Subjek</label>
-                            <select class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors">
+                            <select class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors text-sm">
                                 <option>Informasi Umum</option>
                                 <option>Pemesanan Unit</option>
                                 <option>Test Drive</option>
-                                <option>Keluhan Service</option>
                             </select>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Pesan</label>
-                            <textarea rows="4" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors" placeholder="Tulis pesan Anda di sini..."></textarea>
+                            <textarea rows="4" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors text-sm" placeholder="Tulis pesan Anda di sini..."></textarea>
                         </div>
 
-                        <button type="submit" class="w-full bg-black text-white font-bold py-4 rounded-lg hover:bg-gray-800 transition-all transform hover:-translate-y-1 shadow-lg">
+                        <button type="submit" class="w-full bg-black text-white font-bold py-4 rounded-lg hover:bg-gray-800 transition-all transform hover:-translate-y-1 shadow-lg text-sm md:text-base">
                             Kirim Pesan
                         </button>
                     </form>
@@ -406,22 +408,17 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-black text-white pt-20 pb-10">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 border-b border-gray-800 pb-12">
+    <footer class="bg-black text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12 border-b border-gray-800 pb-12">
                 <div class="col-span-1 md:col-span-1">
                     <div class="flex items-center gap-2 mb-6">
                         <div class="w-8 h-8 bg-white text-black flex items-center justify-center font-bold rounded">B</div>
                         <span class="font-bold text-xl">BYD Auto</span>
                     </div>
                     <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                        Membangun mimpi dengan teknologi ramah lingkungan. Dealer resmi BYD Indonesia.
+                        Membangun mimpi dengan teknologi ramah lingkungan.
                     </p>
-                    <div class="flex gap-4">
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors"><i class="fa-brands fa-youtube"></i></a>
-                    </div>
                 </div>
                 
                 <div>
@@ -430,7 +427,6 @@
                         <li><a href="#" class="hover:text-white transition-colors">BYD Atto 3</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">BYD Dolphin</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">BYD Seal</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">BYD Han</a></li>
                     </ul>
                 </div>
 
@@ -438,9 +434,8 @@
                     <h4 class="font-bold text-lg mb-6">Layanan</h4>
                     <ul class="space-y-3 text-sm text-gray-400">
                         <li><a href="#" class="hover:text-white transition-colors">Test Drive</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Service & Sparepart</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Home Charging Installation</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Trade-in Program</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Service</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Charging</a></li>
                     </ul>
                 </div>
 
@@ -449,48 +444,43 @@
                     <ul class="space-y-3 text-sm text-gray-400">
                         <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Sitemap</a></li>
                     </ul>
                 </div>
             </div>
             <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
                 <p>&copy; 2026 BYD Auto Indonesia. All rights reserved.</p>
-                <div class="flex gap-6 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-white">Privacy Policy</a>
-                    <a href="#" class="hover:text-white">Terms of Service</a>
-                </div>
             </div>
         </div>
     </footer>
 
     <!-- MODAL: Car Details -->
-    <div id="car-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+    <div id="car-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('car-modal')"></div>
         
-        <div class="relative bg-white w-full max-w-5xl mx-4 rounded-2xl shadow-2xl overflow-hidden modal-content flex flex-col md:flex-row max-h-[90vh]">
+        <div class="relative bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden modal-content flex flex-col md:flex-row max-h-[90vh]">
             <button onclick="closeModal('car-modal')" class="absolute top-4 right-4 z-10 w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-colors shadow-sm text-white hover:text-black">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
 
-            <div class="md:w-1/2 h-64 md:h-auto bg-gray-100 relative">
+            <div class="md:w-1/2 h-64 md:h-auto bg-gray-100 relative shrink-0">
                 <img id="modal-img" src="" alt="Car Detail" class="w-full h-full object-cover">
                 <div class="absolute bottom-4 left-4">
                     <span id="modal-badge" class="bg-black text-white px-3 py-1 text-xs font-bold rounded uppercase tracking-wide">Ready Stock</span>
                 </div>
             </div>
 
-            <div class="md:w-1/2 p-8 overflow-y-auto bg-white">
-                <h2 id="modal-title" class="text-3xl font-bold text-gray-900 mb-1">Model Name</h2>
+            <div class="md:w-1/2 p-6 md:p-8 overflow-y-auto bg-white">
+                <h2 id="modal-title" class="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Model Name</h2>
                 <p id="modal-tagline" class="text-gray-500 font-medium mb-6">Tagline</p>
 
-                <div class="mb-8">
+                <div class="mb-6 md:mb-8">
                     <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3 border-b border-gray-100 pb-2">Spesifikasi Utama</h3>
-                    <div class="grid grid-cols-2 gap-4" id="modal-specs-grid">
+                    <div class="grid grid-cols-2 gap-3 md:gap-4" id="modal-specs-grid">
                         <!-- Specs injected here -->
                     </div>
                 </div>
 
-                <div class="mb-8">
+                <div class="mb-6 md:mb-8">
                     <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3 border-b border-gray-100 pb-2">Deskripsi</h3>
                     <p id="modal-desc" class="text-gray-600 text-sm leading-relaxed"></p>
                 </div>
@@ -498,14 +488,14 @@
                 <div class="mt-auto pt-6 border-t border-gray-100">
                     <div class="flex items-center justify-between mb-6">
                         <span class="text-gray-500 text-sm">Harga Mulai Dari</span>
-                        <span id="modal-price" class="text-2xl font-bold text-gray-900">Rp 0</span>
+                        <span id="modal-price" class="text-xl md:text-2xl font-bold text-gray-900">Rp 0</span>
                     </div>
                     
-                    <a id="modal-wa" href="#" target="_blank" class="flex items-center justify-center w-full bg-[#25D366] text-white font-bold py-3.5 rounded-lg hover:bg-[#20bd5a] transition-colors shadow-md group mb-3">
+                    <a id="modal-wa" href="#" target="_blank" class="flex items-center justify-center w-full bg-[#25D366] text-white font-bold py-3.5 rounded-lg hover:bg-[#20bd5a] transition-colors shadow-md group mb-3 text-sm md:text-base">
                         <i class="fa-brands fa-whatsapp text-xl mr-2 group-hover:scale-110 transition-transform"></i>
-                        Hubungi Dealer via WhatsApp
+                        WhatsApp Dealer
                     </a>
-                    <button onclick="closeModal('car-modal'); document.getElementById('calculator').scrollIntoView({behavior: 'smooth'})" class="w-full border border-gray-300 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <button onclick="closeModal('car-modal'); document.getElementById('calculator').scrollIntoView({behavior: 'smooth'})" class="w-full border border-gray-300 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-50 transition-colors text-sm md:text-base">
                         Simulasi Kredit
                     </button>
                 </div>
@@ -514,31 +504,31 @@
     </div>
 
     <!-- MODAL: Favorites List -->
-    <div id="favorites-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+    <div id="favorites-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('favorites-modal')"></div>
         
-        <div class="relative bg-white w-full max-w-2xl mx-4 rounded-2xl shadow-2xl overflow-hidden modal-content flex flex-col max-h-[80vh]">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                    <i class="fa-solid fa-heart text-red-500"></i> Mobil Favorit Saya
+        <div class="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden modal-content flex flex-col max-h-[80vh]">
+            <div class="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-red-500"></i> Favorit
                 </h2>
                 <button onclick="closeModal('favorites-modal')" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
             
-            <div id="favorites-list" class="p-6 overflow-y-auto flex-grow space-y-4">
+            <div id="favorites-list" class="p-4 md:p-6 overflow-y-auto flex-grow space-y-4">
                 <!-- Favorite items injected here -->
             </div>
 
-            <div class="p-6 border-t border-gray-100 bg-gray-50 text-center">
-                <button onclick="closeModal('favorites-modal')" class="px-8 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">Tutup</button>
+            <div class="p-4 md:p-6 border-t border-gray-100 bg-gray-50 text-center">
+                <button onclick="closeModal('favorites-modal')" class="px-8 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors text-sm">Tutup</button>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-8 right-8 bg-black text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3">
+    <div id="toast" class="fixed bottom-8 right-8 left-8 md:left-auto bg-black text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3 max-w-md mx-auto md:mx-0">
         <i class="fa-solid fa-heart text-red-500"></i>
         <span id="toast-msg">Ditambahkan ke favorit</span>
     </div>
@@ -618,6 +608,16 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
         }
 
+        // --- Mobile Menu Logic ---
+        window.toggleMobileMenu = function() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('translate-x-full')) {
+                menu.classList.remove('translate-x-full');
+            } else {
+                menu.classList.add('translate-x-full');
+            }
+        };
+
         // --- Render Functions ---
         async function renderCars() {
             const grid = document.getElementById('car-grid');
@@ -639,15 +639,15 @@
                 card.className = 'group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 flex flex-col h-full reveal';
                 
                 card.innerHTML = `
-                    <div class="relative h-64 overflow-hidden bg-gray-100">
+                    <div class="relative h-56 md:h-64 overflow-hidden bg-gray-100">
                         <img src="${imgUrl}" alt="${car.name}" class="w-full h-full object-cover img-zoom" loading="lazy">
                         <button onclick="toggleLike(${car.id}, this)" class="heart-btn absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors z-10">
                             <i class="${isFav ? 'fa-solid text-red-500' : 'fa-regular text-gray-400'} fa-heart text-lg"></i>
                         </button>
                     </div>
-                    <div class="p-6 flex-grow flex flex-col">
+                    <div class="p-5 md:p-6 flex-grow flex flex-col">
                         <div class="mb-4">
-                            <h3 class="text-2xl font-bold text-gray-900">${car.name}</h3>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-900">${car.name}</h3>
                             <p class="text-sm text-gray-500 font-medium">${car.tagline}</p>
                         </div>
                         
@@ -680,7 +680,7 @@
                     <div class="rounded-t-xl overflow-hidden mb-0 h-48 bg-gray-100">
                         <img src="${imgUrl}" alt="${item.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                     </div>
-                    <div class="p-6">
+                    <div class="p-5 md:p-6">
                         <div class="flex items-center gap-2 text-xs text-gray-400 mb-2">
                             <i class="fa-regular fa-calendar"></i> ${item.date}
                         </div>
@@ -748,13 +748,13 @@
                         const item = document.createElement('div');
                         item.className = 'flex items-center gap-4 bg-gray-50 p-3 rounded-xl border border-gray-100';
                         item.innerHTML = `
-                            <img src="${imgUrl}" class="w-20 h-20 object-cover rounded-lg bg-gray-200">
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-gray-900">${car.name}</h4>
-                                <p class="text-sm text-gray-500">${car.tagline}</p>
+                            <img src="${imgUrl}" class="w-20 h-20 object-cover rounded-lg bg-gray-200 shrink-0">
+                            <div class="flex-grow min-w-0">
+                                <h4 class="font-bold text-gray-900 truncate">${car.name}</h4>
+                                <p class="text-sm text-gray-500 truncate">${car.tagline}</p>
                                 <p class="text-sm font-bold text-blue-600 mt-1">${car.priceStr}</p>
                             </div>
-                            <div class="flex flex-col gap-2">
+                            <div class="flex flex-col gap-2 shrink-0">
                                 <button onclick="openModal(${car.id}); closeModal('favorites-modal')" class="px-3 py-1.5 bg-black text-white text-xs font-bold rounded hover:bg-gray-800">Detail</button>
                                 <button onclick="toggleLike(${car.id}, null); openFavoritesModal()" class="px-3 py-1.5 border border-red-200 text-red-500 text-xs font-bold rounded hover:bg-red-50"><i class="fa-solid fa-trash"></i></button>
                             </div>
