@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BYD Official Store Indonesia - Electric for the Future</title>
+    <title>BYD Indonesia | Build Your Dreams - Official Dealer</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,19 +11,14 @@
     <!-- Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #ffffff;
-            color: #1a1a1a;
-            overflow-x: hidden;
-        }
-
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #1a1a1a; overflow-x: hidden; }
+        
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
@@ -31,110 +26,126 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         /* Animations */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
         .img-zoom-container { overflow: hidden; }
         .img-zoom { transition: transform 0.7s ease; }
         .group:hover .img-zoom { transform: scale(1.05); }
 
         /* Loader */
-        .loader-overlay {
-            position: fixed; inset: 0; background: #fff; z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
-            transition: opacity 0.5s ease;
-        }
+        .loader-overlay { position: fixed; inset: 0; background: #fff; z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
 
         /* Modal Transitions */
-        .modal-backdrop {
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
-        .modal-backdrop.open {
-            opacity: 1; pointer-events: auto;
-        }
-        .modal-content {
-            transform: scale(0.95) translateY(20px); opacity: 0;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .modal-backdrop.open .modal-content {
-            transform: scale(1) translateY(0); opacity: 1;
-        }
+        .modal-backdrop { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+        .modal-content { transform: scale(0.95) translateY(20px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-backdrop.open .modal-content { transform: scale(1) translateY(0); opacity: 1; }
 
-        /* Heart Animation */
-        .heart-btn i { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .heart-btn:active i { transform: scale(1.3); }
-        .text-red-500 { color: #ef4444; }
+        /* Range Slider Styling */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #000; cursor: pointer; margin-top: -8px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e2e8f0; border-radius: 2px; }
+        
+        /* Glassmorphism */
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
     </style>
 </head>
 <body class="antialiased selection:bg-black selection:text-white">
 
     <!-- Page Loader -->
     <div id="loader" class="loader-overlay">
-        <div class="text-2xl font-bold tracking-widest animate-pulse">BYD INDONESIA</div>
+        <div class="flex flex-col items-center">
+            <div class="text-3xl font-bold tracking-widest mb-4">BYD AUTO</div>
+            <div class="w-48 h-1 bg-gray-200 rounded-full overflow-hidden">
+                <div class="h-full bg-black animate-[shimmer_1.5s_infinite_linear]" style="width: 50%"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Navigation -->
-    <nav id="navbar" class="fixed w-full z-40 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-100">
+    <nav id="navbar" class="fixed w-full z-40 transition-all duration-300 bg-transparent py-4">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <div class="flex-shrink-0 cursor-pointer flex items-center gap-2">
-                    <div class="w-8 h-8 bg-black text-white flex items-center justify-center font-bold rounded">B</div>
-                    <span class="font-bold text-xl tracking-tight">BYD Auto</span>
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0 cursor-pointer flex items-center gap-3">
+                    <div class="w-10 h-10 bg-black text-white flex items-center justify-center font-bold rounded-lg shadow-lg">B</div>
+                    <span class="font-bold text-xl tracking-tight text-white drop-shadow-md nav-text">BYD Auto</span>
                 </div>
 
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#models" class="text-sm font-medium text-gray-900 hover:text-gray-600 transition-colors">Model</a>
-                        <a href="#news" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">Berita</a>
-                        <a href="#technology" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">Teknologi</a>
-                        <a href="#contact" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">Hubungi Kami</a>
+                        <a href="#models" class="text-sm font-medium text-white/90 hover:text-white transition-colors nav-link drop-shadow-sm">Model</a>
+                        <a href="#calculator" class="text-sm font-medium text-white/90 hover:text-white transition-colors nav-link drop-shadow-sm">Simulasi Kredit</a>
+                        <a href="#news" class="text-sm font-medium text-white/90 hover:text-white transition-colors nav-link drop-shadow-sm">Berita</a>
+                        <a href="#technology" class="text-sm font-medium text-white/90 hover:text-white transition-colors nav-link drop-shadow-sm">Teknologi</a>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <button class="relative p-2 text-gray-600 hover:text-black transition-colors group" onclick="toggleFavorites()">
+                    <button class="relative p-2 text-white/90 hover:text-white transition-colors group nav-icon drop-shadow-sm" onclick="toggleFavorites()">
                         <i class="fa-regular fa-heart text-xl group-hover:scale-110 transition-transform"></i>
                         <span id="fav-count" class="absolute top-0 right-0 h-4 w-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full opacity-0 transition-opacity">0</span>
                     </button>
-                    <button class="hidden md:block bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-all transform hover:scale-105">
+                    <button class="hidden md:block bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg">
                         Test Drive
                     </button>
+                    <button class="md:hidden text-white text-xl nav-icon drop-shadow-sm"><i class="fa-solid fa-bars"></i></button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
+    <!-- Hero Section with Video/Image Parallax -->
+    <section class="relative h-screen min-h-[800px] flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <img id="hero-bg" src="" alt="BYD Hero" class="w-full h-full object-cover opacity-0 transition-opacity duration-1000">
-            <div class="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/90"></div>
+            <img id="hero-bg" src="" alt="BYD Hero" class="w-full h-full object-cover opacity-0 transition-opacity duration-1000 scale-105">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-white"></div>
         </div>
 
-        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-16">
-            <span class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs font-semibold tracking-wider text-gray-800 mb-6 reveal">
-                OFFICIAL DEALER
+        <div class="relative z-10 text-center px-4 max-w-5xl mx-auto mt-16">
+            <span class="inline-block py-1 px-4 rounded-full glass text-xs font-bold tracking-widest text-gray-800 mb-6 reveal border-none">
+                OFFICIAL DEALER INDONESIA
             </span>
-            <h1 class="text-5xl md:text-7xl font-bold text-gray-900 tracking-tight mb-6 reveal" style="transition-delay: 100ms;">
-                Build Your Dreams
+            <h1 class="text-6xl md:text-8xl font-bold text-white tracking-tight mb-6 reveal drop-shadow-lg" style="transition-delay: 100ms;">
+                BUILD YOUR DREAMS
             </h1>
-            <p class="text-lg md:text-xl text-gray-700 mb-10 max-w-2xl mx-auto font-light reveal" style="transition-delay: 200ms;">
-                Masa depan mobilitas listrik ada di sini. Teknologi Blade Battery, desain elegan, dan performa tanpa kompromi.
+            <p class="text-lg md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto font-light reveal drop-shadow-md" style="transition-delay: 200ms;">
+                Revolusi mobilitas listrik dengan teknologi Blade Battery yang aman, efisien, dan berkelanjutan.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center reveal" style="transition-delay: 300ms;">
-                <a href="#models" class="bg-black text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl">
-                    Lihat Model
+                <a href="#models" class="bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-gray-100 transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
+                    Jelajahi Model
                 </a>
-                <a href="#contact" class="bg-white text-black border border-gray-200 px-8 py-4 rounded-full font-medium hover:bg-gray-50 transition-all">
-                    Jadwalkan Test Drive
+                <a href="#calculator" class="glass text-black px-10 py-4 rounded-full font-bold hover:bg-white/90 transition-all shadow-xl">
+                    Hitung Cicilan
                 </a>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-gray-800">
+            <i class="fa-solid fa-chevron-down text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- Stats Banner -->
+    <section class="py-12 bg-white border-b border-gray-100 relative z-20 -mt-20 mx-4 md:mx-12 rounded-2xl shadow-xl glass">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-100">
+            <div class="reveal">
+                <p class="text-3xl font-bold text-gray-900">Blade Battery</p>
+                <p class="text-sm text-gray-500 mt-1 font-medium">Teraman di Kelasnya</p>
+            </div>
+            <div class="reveal" style="transition-delay: 100ms;">
+                <p class="text-3xl font-bold text-gray-900">e-Platform 3.0</p>
+                <p class="text-sm text-gray-500 mt-1 font-medium">Efisiensi Maksimal</p>
+            </div>
+            <div class="reveal" style="transition-delay: 200ms;">
+                <p class="text-3xl font-bold text-gray-900">DiLink 4.0</p>
+                <p class="text-sm text-gray-500 mt-1 font-medium">Smart Connectivity</p>
+            </div>
+            <div class="reveal" style="transition-delay: 300ms;">
+                <p class="text-3xl font-bold text-gray-900">8 Tahun</p>
+                <p class="text-sm text-gray-500 mt-1 font-medium">Garansi Baterai</p>
             </div>
         </div>
     </section>
@@ -144,81 +155,213 @@
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal">
                 <div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Pilihan Model</h2>
-                    <p class="text-gray-600 max-w-md">Temukan mobil listrik yang sesuai dengan gaya hidup Anda.</p>
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Pilihan Model</h2>
+                    <p class="text-gray-600 max-w-md text-lg">Desain futuristik bertemu dengan performa tinggi. Pilih mobil yang mendefinisikan gaya hidup Anda.</p>
+                </div>
+                <div class="hidden md:flex gap-2">
+                    <button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition-colors"><i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
 
-            <!-- Grid Container -->
             <div id="car-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Cards injected via JS -->
             </div>
         </div>
     </section>
 
+    <!-- Interactive Credit Calculator -->
+    <section id="calculator" class="py-24 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="bg-black rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row reveal">
+                
+                <!-- Left: Form -->
+                <div class="lg:w-1/2 p-8 md:p-12 text-white">
+                    <h2 class="text-3xl font-bold mb-2">Simulasi Kredit</h2>
+                    <p class="text-gray-400 mb-8">Rencanakan kepemilikan mobil impian Anda dengan cicilan yang terjangkau.</p>
+                    
+                    <div class="space-y-8">
+                        <!-- Car Selection -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-3">Pilih Model</label>
+                            <select id="calc-car" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors">
+                                <!-- Options injected via JS -->
+                            </select>
+                        </div>
+
+                        <!-- Down Payment Slider -->
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <label class="text-sm font-medium text-gray-300">Uang Muka (DP)</label>
+                                <span id="dp-display" class="text-sm font-bold text-blue-400">Rp 0</span>
+                            </div>
+                            <input type="range" id="dp-slider" min="10" max="50" value="20" step="5" class="w-full">
+                            <div class="flex justify-between text-xs text-gray-500 mt-2">
+                                <span>10%</span>
+                                <span>50%</span>
+                            </div>
+                        </div>
+
+                        <!-- Tenor Slider -->
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <label class="text-sm font-medium text-gray-300">Jangka Waktu (Tenor)</label>
+                                <span id="tenor-display" class="text-sm font-bold text-blue-400">1 Tahun</span>
+                            </div>
+                            <input type="range" id="tenor-slider" min="1" max="5" value="1" step="1" class="w-full">
+                            <div class="flex justify-between text-xs text-gray-500 mt-2">
+                                <span>1 Thn</span>
+                                <span>5 Thn</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Result -->
+                <div class="lg:w-1/2 bg-gray-900 p-8 md:p-12 flex flex-col justify-center relative">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                    
+                    <h3 class="text-gray-400 text-sm uppercase tracking-widest mb-2">Estimasi Cicilan Per Bulan</h3>
+                    <div class="text-5xl md:text-6xl font-bold text-white mb-6" id="monthly-installment">Rp 0</div>
+                    
+                    <div class="space-y-4 border-t border-gray-800 pt-6">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Harga OTR</span>
+                            <span class="text-white font-medium" id="calc-price">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Total DP</span>
+                            <span class="text-white font-medium" id="calc-dp-total">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Bunga Estimasi</span>
+                            <span class="text-white font-medium">3.5% / Tahun</span>
+                        </div>
+                    </div>
+
+                    <button onclick="openModalFromCalc()" class="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-900/50">
+                        Ajukan Kredit Sekarang
+                    </button>
+                    <p class="text-xs text-gray-500 mt-4 text-center">*Angka ini adalah estimasi. Hubungi dealer untuk penawaran resmi.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- News Section -->
-    <section id="news" class="py-24 bg-white">
+    <section id="news" class="py-24 bg-gray-50">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="text-center mb-16 reveal">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Berita Terkini</h2>
-                <p class="text-gray-600">Update terbaru seputar dunia otomotif listrik dan BYD Indonesia.</p>
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Berita & Update</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Ikuti perkembangan terbaru dari dunia otomotif listrik dan inovasi BYD.</p>
             </div>
 
             <div id="news-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- News Items injected via JS -->
             </div>
+            
+            <div class="mt-12 text-center">
+                <button class="px-8 py-3 border border-gray-300 rounded-full text-gray-700 font-medium hover:bg-black hover:text-white hover:border-black transition-all">Lihat Semua Berita</button>
+            </div>
         </div>
     </section>
 
-    <!-- CTA / Contact Form -->
-    <section id="contact" class="py-24 bg-gray-50 relative">
-        <div class="max-w-4xl mx-auto px-6 lg:px-8">
-            <div class="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 md:p-12 reveal">
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Mulai Perjalanan Elektrik Anda</h2>
-                    <p class="text-gray-600">Dapatkan penawaran terbaik atau jadwalkan test drive sekarang.</p>
-                </div>
-
-                <form class="space-y-6" onsubmit="event.preventDefault(); alert('Terima kasih! Tim kami akan segera menghubungi Anda.');">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
-                            <input type="text" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors" required>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
-                            <input type="tel" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-black focus:ring-0 transition-colors" required>
-                        </div>
+    <!-- Technology Deep Dive -->
+    <section id="technology" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-16 mb-24 reveal">
+                <div class="lg:w-1/2 order-2 lg:order-1">
+                    <div class="img-zoom-container rounded-2xl overflow-hidden shadow-2xl relative group">
+                        <img id="feat-img-1" src="" alt="Blade Battery" class="w-full h-[400px] object-cover img-zoom">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors"></div>
                     </div>
-                    <button type="submit" class="w-full bg-black text-white font-bold py-4 rounded-lg hover:bg-gray-800 transition-all">
-                        Kirim Permintaan
-                    </button>
-                </form>
+                </div>
+                <div class="lg:w-1/2 order-1 lg:order-2">
+                    <div class="inline-block p-3 bg-blue-50 rounded-xl mb-6">
+                        <i class="fa-solid fa-battery-full text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Blade Battery Technology</h3>
+                    <p class="text-gray-600 leading-relaxed mb-6 text-lg">
+                        Baterai LFP (Lithium Iron Phosphate) pertama di dunia yang lolos uji penetrasi kuku. Lebih aman, lebih tahan lama, dan kapasitas lebih besar dalam ruang yang lebih efisien.
+                    </p>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-center bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check-circle text-green-500 mr-3"></i> Tahan terhadap suhu ekstrem (-20°C hingga 60°C)</li>
+                        <li class="flex items-center bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check-circle text-green-500 mr-3"></i> Siklus pengisian daya > 3000 kali</li>
+                        <li class="flex items-center bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check-circle text-green-500 mr-3"></i> Struktur super kuat melindungi sel baterai</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center text-sm text-gray-500">
-            <p>&copy; 2026 BYD Auto Indonesia. All rights reserved.</p>
+    <footer class="bg-black text-white pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 border-b border-gray-800 pb-12">
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-8 h-8 bg-white text-black flex items-center justify-center font-bold rounded">B</div>
+                        <span class="font-bold text-xl">BYD Auto</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Membangun mimpi dengan teknologi ramah lingkungan. Dealer resmi BYD Indonesia.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Model</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">BYD Atto 3</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">BYD Dolphin</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">BYD Seal</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">BYD Han</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Layanan</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Test Drive</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Service & Sparepart</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Home Charging Installation</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Trade-in Program</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Kontak</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><i class="fa-solid fa-phone mr-2 text-blue-500"></i> 021-1234-5678</li>
+                        <li><i class="fa-solid fa-envelope mr-2 text-blue-500"></i> sales@byd-indonesia.id</li>
+                        <li><i class="fa-solid fa-location-dot mr-2 text-blue-500"></i> Jl. Jend. Sudirman No. 1, Jakarta</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+                <p>&copy; 2026 BYD Auto Indonesia. All rights reserved.</p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white">Privacy Policy</a>
+                    <a href="#" class="hover:text-white">Terms of Service</a>
+                    <a href="#" class="hover:text-white">Sitemap</a>
+                </div>
+            </div>
         </div>
     </footer>
 
     <!-- MODAL: Car Details -->
     <div id="car-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-        <!-- Backdrop Blur -->
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
         
-        <!-- Modal Content -->
-        <div class="relative bg-white w-full max-w-4xl mx-4 rounded-2xl shadow-2xl overflow-hidden modal-content flex flex-col md:flex-row max-h-[90vh]">
-            
-            <!-- Close Button -->
-            <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-10 h-10 bg-white/80 rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-sm">
+        <div class="relative bg-white w-full max-w-5xl mx-4 rounded-2xl shadow-2xl overflow-hidden modal-content flex flex-col md:flex-row max-h-[90vh]">
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-colors shadow-sm text-white hover:text-black">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
 
-            <!-- Image Side -->
             <div class="md:w-1/2 h-64 md:h-auto bg-gray-100 relative">
                 <img id="modal-img" src="" alt="Car Detail" class="w-full h-full object-cover">
                 <div class="absolute bottom-4 left-4">
@@ -226,23 +369,20 @@
                 </div>
             </div>
 
-            <!-- Info Side -->
-            <div class="md:w-1/2 p-8 overflow-y-auto">
+            <div class="md:w-1/2 p-8 overflow-y-auto bg-white">
                 <h2 id="modal-title" class="text-3xl font-bold text-gray-900 mb-1">Model Name</h2>
                 <p id="modal-tagline" class="text-gray-500 font-medium mb-6">Tagline</p>
 
                 <div class="mb-8">
                     <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3 border-b border-gray-100 pb-2">Spesifikasi Utama</h3>
-                    <ul id="modal-specs" class="space-y-3 text-sm text-gray-600">
+                    <div class="grid grid-cols-2 gap-4" id="modal-specs-grid">
                         <!-- Specs injected here -->
-                    </ul>
+                    </div>
                 </div>
 
                 <div class="mb-8">
                     <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3 border-b border-gray-100 pb-2">Deskripsi</h3>
-                    <p id="modal-desc" class="text-gray-600 text-sm leading-relaxed">
-                        Description goes here...
-                    </p>
+                    <p id="modal-desc" class="text-gray-600 text-sm leading-relaxed"></p>
                 </div>
 
                 <div class="mt-auto pt-6 border-t border-gray-100">
@@ -251,11 +391,13 @@
                         <span id="modal-price" class="text-2xl font-bold text-gray-900">Rp 0</span>
                     </div>
                     
-                    <a id="modal-wa" href="#" target="_blank" class="flex items-center justify-center w-full bg-[#25D366] text-white font-bold py-3.5 rounded-lg hover:bg-[#20bd5a] transition-colors shadow-md group">
+                    <a id="modal-wa" href="#" target="_blank" class="flex items-center justify-center w-full bg-[#25D366] text-white font-bold py-3.5 rounded-lg hover:bg-[#20bd5a] transition-colors shadow-md group mb-3">
                         <i class="fa-brands fa-whatsapp text-xl mr-2 group-hover:scale-110 transition-transform"></i>
                         Hubungi Dealer via WhatsApp
                     </a>
-                    <p class="text-xs text-center text-gray-400 mt-3">Anda akan diarahkan ke WhatsApp resmi dealer BYD.</p>
+                    <button onclick="closeModal(); document.getElementById('calculator').scrollIntoView({behavior: 'smooth'})" class="w-full border border-gray-300 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        Simulasi Kredit
+                    </button>
                 </div>
             </div>
         </div>
@@ -274,9 +416,10 @@
                 id: 1,
                 name: "BYD Atto 3",
                 tagline: "SUV Listrik Urban",
-                price: "Rp 558.000.000",
+                price: 558000000,
+                priceStr: "Rp 558.000.000",
                 desc: "SUV kompak dengan desain futuristik 'Dragon Face' dan ruang interior yang luas. Dilengkapi fitur gym equipment unik di pintu dan langit-langit bintang.",
-                specs: ["Jarak Tempuh: 480 km (NEDC)", "Akselerasi: 7.3 detik (0-100 km/j)", "Baterai: Blade Battery 60.48 kWh", "Pengisian Daya: DC 80kW (30-80% dalam 50 menit)"],
+                specs: { range: "480 km", accel: "7.3 dtk", battery: "60.48 kWh", charging: "80 kW DC" },
                 imagePrompt: "white byd atto 3 suv electric car studio shot minimal background, front 3/4 view, high quality, photorealistic",
                 seed: 10
             },
@@ -284,9 +427,10 @@
                 id: 2,
                 name: "BYD Dolphin",
                 tagline: "Hatchback Cerdas",
-                price: "Rp 399.000.000",
+                price: 399000000,
+                priceStr: "Rp 399.000.000",
                 desc: "Mobil listrik hatchback berbasis e-Platform 3.0. Desain aerodinamis terinspirasi laut dengan efisiensi energi tinggi dan manuver yang lincah di perkotaan.",
-                specs: ["Jarak Tempuh: 427 km (NEDC)", "Akselerasi: 7.0 detik (0-100 km/j)", "Baterai: Blade Battery 44.9 kWh", "Fitur: NFC Key Card & Mobile App Control"],
+                specs: { range: "427 km", accel: "7.0 dtk", battery: "44.9 kWh", charging: "60 kW DC" },
                 imagePrompt: "blue and white byd dolphin hatchback electric car street photography, sunny day, modern city background, realistic",
                 seed: 20
             },
@@ -294,9 +438,10 @@
                 id: 3,
                 name: "BYD Seal",
                 tagline: "Sedan Performa Tinggi",
-                price: "Rp 799.000.000",
+                price: 799000000,
+                priceStr: "Rp 799.000.000",
                 desc: "Sedan sport elektrik premium dengan rancangan aerodinamis superior. Menawarkan pengalaman berkendara dinamis dengan suspensi independen dan mode berkendara ganda.",
-                specs: ["Jarak Tempuh: 570 km (NEDC)", "Akselerasi: 3.8 detik (0-100 km/j) AWD", "Baterai: Blade Battery 82.5 kWh", "Rem: Brembo 4-piston calipers"],
+                specs: { range: "570 km", accel: "3.8 dtk", battery: "82.5 kWh", charging: "150 kW DC" },
                 imagePrompt: "grey byd seal sedan electric car dynamic angle, motion blur background, luxury automotive photography, sleek design",
                 seed: 30
             }
@@ -327,6 +472,7 @@
         ];
 
         let favorites = [];
+        let currentCalcPrice = cars[0].price;
 
         // --- Helper Functions ---
         function getImageUrl(prompt, seed) {
@@ -341,19 +487,26 @@
         // --- Render Functions ---
         async function renderCars() {
             const grid = document.getElementById('car-grid');
+            const calcSelect = document.getElementById('calc-car');
             
+            // Populate Calculator Select
+            cars.forEach(car => {
+                const option = document.createElement('option');
+                option.value = car.price;
+                option.text = `${car.name} - ${car.priceStr}`;
+                calcSelect.appendChild(option);
+            });
+
             for (const car of cars) {
                 const imgUrl = getImageUrl(car.imagePrompt, car.seed);
                 const isFav = favorites.includes(car.id);
                 
                 const card = document.createElement('div');
-                card.className = 'group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col h-full reveal';
+                card.className = 'group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 flex flex-col h-full reveal';
                 
                 card.innerHTML = `
                     <div class="relative h-64 overflow-hidden bg-gray-100">
                         <img src="${imgUrl}" alt="${car.name}" class="w-full h-full object-cover img-zoom" loading="lazy">
-                        
-                        <!-- Favorite Button -->
                         <button onclick="toggleLike(${car.id}, this)" class="heart-btn absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors z-10">
                             <i class="${isFav ? 'fa-solid text-red-500' : 'fa-regular text-gray-400'} fa-heart text-lg"></i>
                         </button>
@@ -365,16 +518,14 @@
                         </div>
                         
                         <div class="flex gap-4 mb-6 text-xs text-gray-600 border-y border-gray-100 py-3">
-                            ${car.specs.slice(0, 2).map(spec => {
-                                const parts = spec.split(':');
-                                return `<span class="flex items-center"><i class="fa-solid fa-bolt mr-1.5 text-blue-500"></i> ${parts[0]}</span>`;
-                            }).join('')}
+                            <span class="flex items-center"><i class="fa-solid fa-road mr-1.5 text-blue-500"></i> ${car.specs.range}</span>
+                            <span class="flex items-center"><i class="fa-solid fa-bolt mr-1.5 text-blue-500"></i> ${car.specs.accel}</span>
                         </div>
                         
                         <p class="text-gray-600 text-sm mb-6 line-clamp-2 flex-grow">${car.desc}</p>
                         
                         <div class="mt-auto">
-                            <p class="text-lg font-bold text-gray-900 mb-4">${car.price}</p>
+                            <p class="text-lg font-bold text-gray-900 mb-4">${car.priceStr}</p>
                             <button onclick="openModal(${car.id})" class="w-full bg-black text-white py-3 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 group-hover:gap-3">
                                 Lihat Detail <i class="fa-solid fa-arrow-right text-xs"></i>
                             </button>
@@ -390,27 +541,27 @@
             for (const item of newsData) {
                 const imgUrl = getImageUrl(item.imagePrompt, item.seed);
                 const card = document.createElement('div');
-                card.className = 'group cursor-pointer reveal';
+                card.className = 'group cursor-pointer reveal bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow';
                 card.innerHTML = `
-                    <div class="rounded-xl overflow-hidden mb-4 h-48 bg-gray-100">
+                    <div class="rounded-t-xl overflow-hidden mb-0 h-48 bg-gray-100">
                         <img src="${imgUrl}" alt="${item.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                     </div>
-                    <div class="flex items-center gap-2 text-xs text-gray-400 mb-2">
-                        <i class="fa-regular fa-calendar"></i> ${item.date}
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 text-xs text-gray-400 mb-2">
+                            <i class="fa-regular fa-calendar"></i> ${item.date}
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">${item.title}</h3>
+                        <p class="text-sm text-gray-500 line-clamp-2">${item.excerpt}</p>
+                        <span class="inline-block mt-4 text-sm font-medium text-black border-b border-black pb-0.5 group-hover:border-blue-600 group-hover:text-blue-600 transition-colors">Baca Selengkapnya</span>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">${item.title}</h3>
-                    <p class="text-sm text-gray-500 line-clamp-2">${item.excerpt}</p>
                 `;
                 grid.appendChild(card);
             }
         }
 
         // --- Interaction Logic ---
-
-        // Toggle Like/Favorite
         window.toggleLike = function(id, btn) {
             const icon = btn.querySelector('i');
-            
             if (favorites.includes(id)) {
                 favorites = favorites.filter(favId => favId !== id);
                 icon.classList.remove('fa-solid', 'text-red-500');
@@ -448,37 +599,41 @@
             document.getElementById('modal-img').src = getImageUrl(car.imagePrompt, car.seed);
             document.getElementById('modal-title').innerText = car.name;
             document.getElementById('modal-tagline').innerText = car.tagline;
-            document.getElementById('modal-price').innerText = car.price;
+            document.getElementById('modal-price').innerText = car.priceStr;
             document.getElementById('modal-desc').innerText = car.desc;
             
-            // Generate Specs List
-            const specsList = document.getElementById('modal-specs');
-            specsList.innerHTML = car.specs.map(spec => `
-                <li class="flex items-start">
-                    <i class="fa-solid fa-check text-green-500 mt-1 mr-3 text-xs"></i>
-                    <span>${spec}</span>
-                </li>
-            `).join('');
+            // Generate Specs Grid
+            const specsGrid = document.getElementById('modal-specs-grid');
+            specsGrid.innerHTML = `
+                <div class="bg-gray-50 p-3 rounded-lg"><span class="block text-xs text-gray-500">Jarak Tempuh</span><span class="font-bold text-gray-900">${car.specs.range}</span></div>
+                <div class="bg-gray-50 p-3 rounded-lg"><span class="block text-xs text-gray-500">Akselerasi</span><span class="font-bold text-gray-900">${car.specs.accel}</span></div>
+                <div class="bg-gray-50 p-3 rounded-lg"><span class="block text-xs text-gray-500">Kapasitas Baterai</span><span class="font-bold text-gray-900">${car.specs.battery}</span></div>
+                <div class="bg-gray-50 p-3 rounded-lg"><span class="block text-xs text-gray-500">Fast Charging</span><span class="font-bold text-gray-900">${car.specs.charging}</span></div>
+            `;
 
-            // Generate WA Link
-            const message = `Halo Dealer BYD, saya tertarik dengan mobil *${car.name}* yang dijual seharga ${car.price}. Bisa minta info lebih lanjut?`;
+            const message = `Halo Dealer BYD, saya tertarik dengan mobil *${car.name}* yang dijual seharga ${car.priceStr}. Bisa minta info lebih lanjut?`;
             document.getElementById('modal-wa').href = `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`;
 
             const modal = document.getElementById('car-modal');
             modal.classList.remove('hidden');
-            // Small delay to allow display:block to apply before opacity transition
             setTimeout(() => modal.classList.add('open'), 10);
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            document.body.style.overflow = 'hidden';
         };
 
         window.closeModal = function() {
             const modal = document.getElementById('car-modal');
             modal.classList.remove('open');
             setTimeout(() => {
-                // modal.classList.add('hidden'); // Optional: hide completely
+                // modal.classList.add('hidden');
             }, 300);
             document.body.style.overflow = '';
         };
+
+        window.openModalFromCalc = function() {
+            const selectedCarName = document.getElementById('calc-car').options[document.getElementById('calc-car').selectedIndex].text.split(' - ')[0];
+            const message = `Halo Dealer BYD, saya ingin mengajukan kredit untuk mobil *${selectedCarName}*. Mohon bantuannya.`;
+            window.open(`https://wa.me/6281234567890?text=${encodeURIComponent(message)}`, '_blank');
+        }
 
         window.toggleFavorites = function() {
             if(favorites.length === 0) {
@@ -488,25 +643,52 @@
             }
         }
 
+        // --- Calculator Logic ---
+        function calculateLoan() {
+            const price = parseInt(document.getElementById('calc-car').value);
+            const dpPercent = parseInt(document.getElementById('dp-slider').value);
+            const tenorYears = parseInt(document.getElementById('tenor-slider').value);
+            
+            const dpAmount = price * (dpPercent / 100);
+            const loanAmount = price - dpAmount;
+            const interestRate = 0.035; // 3.5% per year flat for estimation
+            const totalInterest = loanAmount * interestRate * tenorYears;
+            const totalLoan = loanAmount + totalInterest;
+            const monthly = totalLoan / (tenorYears * 12);
+
+            // Update UI
+            document.getElementById('dp-display').innerText = formatRupiah(dpAmount);
+            document.getElementById('tenor-display').innerText = tenorYears + (tenorYears === 1 ? " Tahun" : " Tahun");
+            document.getElementById('monthly-installment').innerText = formatRupiah(monthly);
+            document.getElementById('calc-price').innerText = formatRupiah(price);
+            document.getElementById('calc-dp-total').innerText = formatRupiah(dpAmount);
+            
+            currentCalcPrice = price;
+        }
+
+        // Event Listeners for Calculator
+        document.getElementById('calc-car').addEventListener('change', calculateLoan);
+        document.getElementById('dp-slider').addEventListener('input', calculateLoan);
+        document.getElementById('tenor-slider').addEventListener('input', calculateLoan);
+
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', async () => {
-            // Remove Loader
             setTimeout(() => {
                 const loader = document.getElementById('loader');
                 loader.style.opacity = '0';
                 setTimeout(() => loader.remove(), 500);
             }, 800);
 
-            // Set Hero Image
             const heroImg = document.getElementById('hero-bg');
             heroImg.src = getImageUrl("futuristic electric car driving on coastal road sunset, cinematic lighting, wide angle, photorealistic, 8k", 99);
             heroImg.onload = () => heroImg.classList.remove('opacity-0');
 
-            // Render Content
+            document.getElementById('feat-img-1').src = getImageUrl("electric vehicle battery pack technology internal structure, clean laboratory background, blue lighting, detailed", 55);
+
             await renderCars();
             await renderNews();
+            calculateLoan(); // Init calc
             
-            // Setup Observer
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) entry.target.classList.add('active');
@@ -518,12 +700,24 @@
         // Navbar Scroll Effect
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
+            const navText = document.querySelector('.nav-text');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const navIcons = document.querySelectorAll('.nav-icon');
+            
             if (window.scrollY > 50) {
-                nav.classList.add('shadow-sm');
-                nav.classList.replace('h-20', 'h-16');
+                nav.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-2');
+                nav.classList.remove('bg-transparent', 'py-4');
+                navText.classList.remove('text-white', 'drop-shadow-md');
+                navText.classList.add('text-black');
+                navLinks.forEach(l => { l.classList.remove('text-white/90', 'drop-shadow-sm'); l.classList.add('text-gray-700'); });
+                navIcons.forEach(i => { i.classList.remove('text-white/90', 'drop-shadow-sm'); i.classList.add('text-gray-700'); });
             } else {
-                nav.classList.remove('shadow-sm');
-                nav.classList.replace('h-16', 'h-20');
+                nav.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-2');
+                nav.classList.add('bg-transparent', 'py-4');
+                navText.classList.add('text-white', 'drop-shadow-md');
+                navText.classList.remove('text-black');
+                navLinks.forEach(l => { l.classList.add('text-white/90', 'drop-shadow-sm'); l.classList.remove('text-gray-700'); });
+                navIcons.forEach(i => { i.classList.add('text-white/90', 'drop-shadow-sm'); i.classList.remove('text-gray-700'); });
             }
         });
 
